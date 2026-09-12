@@ -1,0 +1,123 @@
+# part_no|part_title|clause|title|tags
+# tags: P=permit trigger, N=notice to comply/directive power, I=infringeable conduct, D=definitional/machinery, X=superseded risk
+1|Preliminary|1|Name and Objectives of Local Law|D
+1|Preliminary|2|Authorising Provision of this Local Law|D,X
+1|Preliminary|3|Commencement of this Local Law|D
+1|Preliminary|4|Revocation Date of this Local Law|D,X
+1|Preliminary|5|Definition of Words Used in this Local Law|D,X
+1|Preliminary|6|Application of the Local Law|D
+1|Preliminary|7|Council Positions|D
+1|Preliminary|8|Conflict with Other Legislation|D
+2|Administration of this Local Law|9|Exercise of Discretions|D
+2|Administration of this Local Law|10|Register of Determinations|D
+2|Administration of this Local Law|11|Direction of Council: Notice to Comply|N
+2|Administration of this Local Law|12|Time to Comply|N
+2|Administration of this Local Law|13|Service of Notice to Comply|N
+2|Administration of this Local Law|14|Failure to Comply with a Notice to Comply|N,I
+2|Administration of this Local Law|15|Power of Authorised Officers to Act in Urgent Circumstances|N
+2|Administration of this Local Law|16|Appeals|D
+2|Administration of this Local Law|17|Compliance with Directions and Notices|N
+2|Administration of this Local Law|18|Delegations and Authorisations|D
+2|Administration of this Local Law|19|Incorporation of Documents|D
+3|The Common Seal|20|Purpose of the Common Seal|D,X
+3|The Common Seal|21|Who Keeps the Common Seal|D,X
+3|The Common Seal|22|Signatures to Accompany the Common Seal|D,X
+3|The Common Seal|23|Affixing the Common Seal|D,X
+3|The Common Seal|24|Unauthorised Use of the Common Seal|I,X
+5|Management of Drains|104|Interference with Council Drains, Sewers or Similar|P,I
+5|Management of Drains|105|Maintenance of Drains|N
+5|Management of Drains|106|Drainage of Properties|N
+6|Vehicle Crossings|107|Vehicle Crossings|N,I
+6|Vehicle Crossings|108|Temporary Vehicle Crossings|N,I
+6|Vehicle Crossings|109|Repair of Vehicle Crossings|N
+7|Protection of Council Land|110|Defacing/Damaging Council Land|P,I
+7|Protection of Council Land|111|Lighting Fires|P,I
+7|Protection of Council Land|112|Trees or Plants Causing Damage to Council Land|N
+7|Protection of Council Land|113|Trees and Plants on Council Land|P,I
+7|Protection of Council Land|114|Temporary Buildings on a Road|P,I
+7|Protection of Council Land|115|Damage to Kerbs, Paths and Other Assets from Building Work|P,I
+8|Use of Municipal Places|116|Prohibition of Entry|P,I
+8|Use of Municipal Places|117|Behaviour|I
+8|Use of Municipal Places|118|Terms and Conditions of Admission to, or Membership of, a Municipal Place|I
+8|Use of Municipal Places|119|Prohibited Articles|I
+8|Use of Municipal Places|120|Directions|N,I
+9|Council Reserves|121|Access to Council Reserves|P,I
+9|Council Reserves|122|Use of Council Reserves|P,I
+9|Council Reserves|123|Restrictions|N,I
+10|Roads, Public Places and Council Land|124|Application|D
+10|Roads, Public Places and Council Land|125|Shopping Trolleys|I
+10|Roads, Public Places and Council Land|126|Footpath Trading Policy|P,I
+10|Roads, Public Places and Council Land|127|Obstructions|P,I
+10|Roads, Public Places and Council Land|128|Repairing Vehicles|I
+10|Roads, Public Places and Council Land|129|Consumption of Liquor|P,N,I
+10|Roads, Public Places and Council Land|130|Mobile Cranes|P,I
+10|Roads, Public Places and Council Land|131|Hoarding, Scaffolding and Overhead Protective Awning|P,I
+10|Roads, Public Places and Council Land|132|Bulk Rubbish and Storage Containers Left on Roads|P,I
+10|Roads, Public Places and Council Land|133|Clothing Bins|P,I
+10|Roads, Public Places and Council Land|134|Unregistered, Abandoned and Obstructing Vehicles|I
+10|Roads, Public Places and Council Land|135|Parking Permits|P,I
+10|Roads, Public Places and Council Land|136|Filming|P,I
+10|Roads, Public Places and Council Land|137|Toy Vehicles|P,I,X
+11|Street Selling, Collections and Distributions|138|Itinerant Trading|P,I
+11|Street Selling, Collections and Distributions|139|Street Appeals|P,I
+11|Street Selling, Collections and Distributions|140|Street Promotions|P,I
+11|Street Selling, Collections and Distributions|141|Processions, Street Festivals and Street Parties|P,I
+12|Protection of the Amenity of the Municipal District|142|Property Numbers|N,I
+12|Protection of the Amenity of the Municipal District|143|Camping and Camping on Council Land or a Road|P,I
+12|Protection of the Amenity of the Municipal District|144|Noise|N,I
+12|Protection of the Amenity of the Municipal District|145|Advertisements|P,N,I
+12|Protection of the Amenity of the Municipal District|146|Mobile Billboards|P,I
+12|Protection of the Amenity of the Municipal District|147|Incinerators and Fires|P,I
+12|Protection of the Amenity of the Municipal District|148|Chimneys|N,I
+12|Protection of the Amenity of the Municipal District|149|Directive Powers|N,I
+12|Protection of the Amenity of the Municipal District|150|Unsightly Premises|N,I
+12|Protection of the Amenity of the Municipal District|151|Fencing of Vacant Land|N,I
+12|Protection of the Amenity of the Municipal District|152|Securing and Fencing Dilapidated Land|N,I
+12|Protection of the Amenity of the Municipal District|153|Vermin and Noxious Weeds|N,I
+12|Protection of the Amenity of the Municipal District|154|Dangerous Land|N,I
+12|Protection of the Amenity of the Municipal District|155|Motor Vehicles and Machinery|N,I
+12|Protection of the Amenity of the Municipal District|156|Overhanging and Encroaching Trees|N,I
+12|Protection of the Amenity of the Municipal District|157|Dilapidated Buildings|N,I
+13|Building Activity|158|Building Definitions|D
+13|Building Activity|159|Building Activity Hours|I
+13|Building Activity|160|Dust Control|N,I
+13|Building Activity|161|Spoil from Building Sites|N,I
+13|Building Activity|162|Building Material|N,I
+14|Tree Protection|163|Tree Protection|P,I
+15|Animals and Birds|164|Application of Part|D
+15|Animals and Birds|165|Conditions Under Which Animals May be Kept|P,I
+15|Animals and Birds|166|Keeping of Animals Policy|P,I
+15|Animals and Birds|167|Animal Noises|N,I
+15|Animals and Birds|168|Animal Excrement|I
+15|Animals and Birds|169|Wasp Nest(s) and Bee Swarm(s) to be Removed|N,I
+15|Animals and Birds|170|Pest Animals|N,I
+15|Animals and Birds|171|Fencing of Dogs|N,I
+15|Animals and Birds|172|Feeding of Animals and Birds|I
+16|Sanitation|173|Supply and Use of Waste Receptacles|I
+16|Sanitation|174|Domestic and Recycling Waste Collection|I
+16|Sanitation|175|Trade Waste Bins and Hoppers|P,I
+16|Sanitation|176|Council Waste Acceptance Facilities|I
+16|Sanitation|177|Directive Powers|N,I
+17|Permits|178|Application for a Permit|P,D
+17|Permits|179|Consideration of Applications|P,D
+17|Permits|180|Permits May be Conditional|P,D
+17|Permits|181|Power to Amend Conditions|P,D
+17|Permits|182|Security Bonds|P,D
+17|Permits|183|Register of Permits|P,D
+17|Permits|184|Duration of Permits|P,D
+17|Permits|185|Correction of Permits|P,D
+17|Permits|186|Cancellation, Suspension or Amendment of Permits|P,D
+17|Permits|187|Transferability of Permits|P,D
+17|Permits|188|Permit Issue and Refusal|P,D
+17|Permits|189|Exemptions|P,D
+17|Permits|190|Information|P,I
+18|Fees, Charges and Costs|191|Setting Fees and Charges|D
+18|Fees, Charges and Costs|192|Differential or Structured Fees and Charges|D
+18|Fees, Charges and Costs|193|Waiver or Alteration to Fees and Charges|D
+19|Infringement Notices|194|Purpose|D
+19|Infringement Notices|195|Infringement Notice|I
+20|Enforcement, Offences and Prosecutions|196|Recovery of Costs|D
+20|Enforcement, Offences and Prosecutions|197|Offences|I
+20|Enforcement, Offences and Prosecutions|198|General Penalties|I
+20|Enforcement, Offences and Prosecutions|199|Power to Impound|I
+20|Enforcement, Offences and Prosecutions|200|Impersonating Council Staff|I

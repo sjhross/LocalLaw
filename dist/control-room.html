@@ -1,0 +1,925 @@
+<title>Sunset Clause</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#ECEEF0; --surface:#FFFFFF; --surface-2:#F4F6F7; --surface-3:#E4E8EB;
+  --ink:#14181C; --ink-2:#4A545C; --ink-3:#79848D;
+  --rule:#D2D9DE; --rule-strong:#B6C0C7;
+  --accent:#8A2F32; --accent-ink:#FFFFFF; --accent-wash:#F3E6E6;
+  --teal:#1F5F66; --teal-wash:#E2EDEE;
+  --amber:#9C6510; --amber-wash:#F5EADA;
+  --blue:#2C4E8A; --blue-wash:#E3E9F3;
+  --green:#2C6B50; --green-wash:#E2EEE8;
+  --red:#A33131; --red-wash:#F5E3E3;
+  --grey-wash:#E8ECEE;
+  --shadow:0 1px 2px rgba(20,24,28,.06), 0 6px 20px rgba(20,24,28,.05);
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1317; --surface:#171C21; --surface-2:#1D242A; --surface-3:#252D34;
+    --ink:#E4E9ED; --ink-2:#A4AFB7; --ink-3:#78838C;
+    --rule:#2A323A; --rule-strong:#3B444D;
+    --accent:#D97F84; --accent-ink:#1A0F10; --accent-wash:#341F21;
+    --teal:#63AEB4; --teal-wash:#17302F;
+    --amber:#D9A445; --amber-wash:#332816;
+    --blue:#89A6DC; --blue-wash:#1B2436;
+    --green:#6BB795; --green-wash:#162C23;
+    --red:#E38C8C; --red-wash:#38201F;
+    --grey-wash:#232A30;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.28);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1317; --surface:#171C21; --surface-2:#1D242A; --surface-3:#252D34;
+  --ink:#E4E9ED; --ink-2:#A4AFB7; --ink-3:#78838C;
+  --rule:#2A323A; --rule-strong:#3B444D;
+  --accent:#D97F84; --accent-ink:#1A0F10; --accent-wash:#341F21;
+  --teal:#63AEB4; --teal-wash:#17302F;
+  --amber:#D9A445; --amber-wash:#332816;
+  --blue:#89A6DC; --blue-wash:#1B2436;
+  --green:#6BB795; --green-wash:#162C23;
+  --red:#E38C8C; --red-wash:#38201F;
+  --grey-wash:#232A30;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 20px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:500;margin:0;text-wrap:balance;letter-spacing:-.005em}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- shell ---------- */
+.shell{display:flex;min-height:100vh;align-items:stretch}
+.rail{flex:0 0 228px;background:var(--surface);border-right:1px solid var(--rule);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.brand{padding:20px 18px 16px;border-bottom:1px solid var(--rule)}
+.brand .crest{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.brand h1{font-size:19px;line-height:1.15;margin-top:6px}
+.brand .sub{font-size:11.5px;color:var(--ink-2);margin-top:5px;line-height:1.35}
+.nav{padding:10px 10px;display:flex;flex-direction:column;gap:1px;flex:1;overflow-y:auto}
+.nav a{display:flex;align-items:baseline;gap:8px;padding:8px 9px;border-radius:3px;text-decoration:none;color:var(--ink-2);font-size:13.5px;font-weight:500}
+.nav a .n{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);min-width:15px}
+.nav a:hover{background:var(--surface-2);color:var(--ink)}
+.nav a[aria-current="page"]{background:var(--accent-wash);color:var(--accent)}
+.nav a[aria-current="page"] .n{color:var(--accent)}
+.railfoot{border-top:1px solid var(--rule);padding:12px 14px;display:flex;flex-direction:column;gap:9px}
+.who{display:flex;align-items:center;gap:7px}
+.who label{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.who input{width:52px;background:var(--surface-2);border:1px solid var(--rule);border-radius:3px;padding:3px 6px;font-family:var(--mono);font-size:11px;color:var(--ink);text-transform:uppercase}
+.dbstat{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--ink-3);line-height:1.3}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ink-3);flex:0 0 auto}
+.dot.live{background:var(--green)} .dot.local{background:var(--amber)}
+.themebtn{background:none;border:1px solid var(--rule);border-radius:3px;padding:4px 8px;font-size:11px;color:var(--ink-2);cursor:pointer;align-self:flex-start}
+.themebtn:hover{border-color:var(--rule-strong);color:var(--ink)}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb, var(--paper) 88%, transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);padding:9px 28px;display:flex;gap:26px;align-items:center;flex-wrap:wrap}
+.tb{display:flex;align-items:baseline;gap:8px;min-width:0}
+.tb .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3)}
+.tb .v{font-size:13px;font-weight:500}
+.tb .v.count{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.tb.alert .v{color:var(--accent)}
+main{padding:30px 28px 72px;max-width:1220px;width:100%}
+
+/* ---------- headings ---------- */
+.vh{margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--rule)}
+.vh .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:7px}
+.vh h2{font-size:27px}
+.vh p{margin:8px 0 0;color:var(--ink-2);max-width:66ch;font-size:13.5px}
+h3.sec{font-size:16px;margin:32px 0 12px;display:flex;align-items:baseline;gap:10px}
+h3.sec:first-child{margin-top:0}
+h3.sec .tally{font-family:var(--mono);font-size:11px;color:var(--ink-3);font-weight:400}
+.note{font-size:12px;color:var(--ink-3);max-width:72ch;margin:8px 0 0}
+
+/* ---------- seal / countdown ---------- */
+.seal{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:3px;overflow:hidden;margin-bottom:8px}
+.seal>div{background:var(--surface);padding:15px 16px 14px}
+.seal .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.seal .big{font-family:var(--serif);font-size:38px;line-height:1;margin-top:9px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.seal .big.hot{color:var(--accent)}
+.seal .cap{font-size:11.5px;color:var(--ink-2);margin-top:7px;line-height:1.35}
+
+/* ---------- gantt ---------- */
+.gantt{border:1px solid var(--rule);border-radius:3px;background:var(--surface);padding:0 0 6px;overflow-x:auto}
+.gantt-in{min-width:760px;padding:14px 18px 8px}
+.axis{position:relative;height:19px;border-bottom:1px solid var(--rule);margin-bottom:11px}
+.axis span{position:absolute;top:0;font-family:var(--mono);font-size:9.5px;color:var(--ink-3);transform:translateX(-50%);white-space:nowrap}
+.gantt-row{display:grid;grid-template-columns:170px 1fr;gap:14px;align-items:center;margin-bottom:5px}
+.gantt-row .lab{font-size:12px;color:var(--ink-2);text-align:right;line-height:1.25}
+.gantt-row .lab b{display:block;color:var(--ink);font-weight:500;font-size:12.5px}
+.track{position:relative;height:20px;background:linear-gradient(var(--surface-2),var(--surface-2));border-radius:2px}
+.bar{position:absolute;top:3px;height:14px;border-radius:2px;background:var(--teal);opacity:.82}
+.bar.now{background:var(--accent)}
+.vline{position:absolute;top:0;bottom:0;width:0;border-left:1px dashed var(--accent)}
+.vline.now{border-left:1px solid var(--accent);opacity:.5}
+.hardrow{background:transparent;border-top:1px solid var(--rule)}
+.hardlab{position:absolute;left:0;top:3px;transform:translateX(-50%);font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;color:var(--accent);white-space:nowrap}
+.gantt-marks{position:relative;height:56px;margin-top:6px;border-top:1px solid var(--rule);padding-top:4px}
+.mark{position:absolute;top:4px;transform:translateX(-50%);text-align:center;width:24px}
+.mark i{display:block;width:7px;height:7px;margin:0 auto;background:var(--surface);border:1.5px solid var(--ink-2);transform:rotate(45deg)}
+.mark.done i{background:var(--green);border-color:var(--green)}
+.mark.active i{background:var(--accent);border-color:var(--accent)}
+.mark b{display:block;font-family:var(--mono);font-size:9px;color:var(--ink-3);margin-top:5px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:var(--ink-3);padding:8px 18px 0}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+
+/* ---------- ledger ---------- */
+.ledger{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);border:1px solid var(--rule);border-radius:3px}
+.ledger th{text-align:left;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:400;padding:9px 11px;border-bottom:1px solid var(--rule-strong);white-space:nowrap;background:var(--surface-2)}
+.ledger td{padding:8px 11px;border-bottom:1px solid var(--rule);vertical-align:top}
+.ledger tr:last-child td{border-bottom:0}
+.ledger tr:hover td{background:var(--surface-2)}
+.ledger .num{font-family:var(--mono);font-size:12px;color:var(--ink-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+.ledger .ti{font-weight:500;line-height:1.35}
+.ledger .meta{color:var(--ink-3);font-size:11.5px;margin-top:3px;line-height:1.4}
+.tablewrap{overflow-x:auto;border-radius:3px}
+.gaprow td{background:var(--grey-wash)!important;color:var(--ink-3);font-size:11.5px;font-style:italic;padding:7px 11px}
+
+/* ---------- chips, pills ---------- */
+.chip{display:inline-block;padding:1px 6px;border-radius:2px;font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;background:var(--grey-wash);color:var(--ink-2);white-space:nowrap}
+.chip+.chip{margin-left:3px}
+.chip.p{background:var(--blue-wash);color:var(--blue)}
+.chip.n{background:var(--amber-wash);color:var(--amber)}
+.chip.i{background:var(--accent-wash);color:var(--accent)}
+.chip.x{background:var(--red-wash);color:var(--red)}
+.chip.link{background:var(--teal-wash);color:var(--teal);cursor:pointer;border:0}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;background:var(--grey-wash);color:var(--ink-2);white-space:nowrap}
+.pill::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.85}
+.pill.green{background:var(--green-wash);color:var(--green)}
+.pill.amber{background:var(--amber-wash);color:var(--amber)}
+.pill.red{background:var(--red-wash);color:var(--red)}
+.pill.blue{background:var(--blue-wash);color:var(--blue)}
+.pill.teal{background:var(--teal-wash);color:var(--teal)}
+.pill.grey{background:var(--grey-wash);color:var(--ink-3)}
+
+/* ---------- controls ---------- */
+select,input[type=text],input[type=search],textarea{font:inherit;font-size:12.5px;color:var(--ink);background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:4px 7px;max-width:100%}
+select:hover,input:hover{border-color:var(--rule-strong)}
+textarea{width:100%;resize:vertical;line-height:1.45;font-size:12.5px;min-height:34px}
+.filters{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:14px;padding:11px 12px;background:var(--surface);border:1px solid var(--rule);border-radius:3px}
+.filters label{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-right:-4px}
+.filters input[type=search]{flex:1;min-width:150px}
+.clearbtn{background:none;border:1px solid var(--rule);border-radius:3px;padding:4px 9px;font-size:11.5px;color:var(--ink-2);cursor:pointer}
+.clearbtn:hover{border-color:var(--accent);color:var(--accent)}
+.sel-dis{width:112px} .sel-own{width:150px}
+
+/* ---------- tally bar ---------- */
+.tallybar{display:flex;height:9px;border-radius:2px;overflow:hidden;background:var(--surface-3);margin:0 0 9px}
+.tallybar i{display:block;height:100%}
+.tallykey{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-2);margin-bottom:20px}
+.tallykey b{font-family:var(--mono);font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums}
+.tallykey span i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;vertical-align:0}
+
+/* ---------- panels ---------- */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:18px}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:16px 17px}
+.panel h4{font-size:14.5px;margin-bottom:3px}
+.panel .lede{font-size:12px;color:var(--ink-3);margin:0 0 12px}
+.stack{display:flex;flex-direction:column;gap:0}
+.item{padding:10px 0;border-top:1px solid var(--rule)}
+.item:first-child{border-top:0;padding-top:2px}
+.item .top{display:flex;gap:10px;align-items:baseline;justify-content:space-between}
+.item .ti{font-weight:500;font-size:13px;line-height:1.35}
+.item .sub{font-size:11.5px;color:var(--ink-3);margin-top:3px;line-height:1.4}
+.date{font-family:var(--mono);font-size:11px;color:var(--ink-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* ---------- cards (gates, pilots) ---------- */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--rule-strong);border-radius:3px;padding:14px 15px;display:flex;flex-direction:column;gap:8px}
+.card.is-next{border-left-color:var(--accent)}
+.card.is-done{border-left-color:var(--green)}
+.card .hd{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.card .id{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.06em}
+.card h4{font-size:14px;line-height:1.3}
+.card p{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.card .test{font-size:12px;color:var(--ink-2);border-left:2px solid var(--rule);padding-left:10px;line-height:1.5}
+.card .foot{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:auto;padding-top:4px}
+.kv{display:flex;gap:6px;font-size:11.5px;color:var(--ink-3)}
+.kv b{font-weight:500;color:var(--ink-2)}
+
+/* ---------- matrices ---------- */
+.matrix{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:16px 18px}
+.mx{display:grid;grid-template-columns:auto repeat(5,1fr);gap:3px}
+.mx .ylab,.mx .xlab{font-family:var(--mono);font-size:9.5px;color:var(--ink-3);display:flex;align-items:center;justify-content:center;text-align:center}
+.mx .ylab{writing-mode:vertical-rl;transform:rotate(180deg);grid-row:span 5;padding-right:4px}
+.cell{min-height:54px;border-radius:2px;padding:4px;display:flex;flex-wrap:wrap;gap:3px;align-content:flex-start;background:var(--surface-2);border:1px solid var(--rule)}
+.cell.l1{background:var(--green-wash)} .cell.l2{background:var(--grey-wash)}
+.cell.l3{background:var(--amber-wash)} .cell.l4{background:var(--red-wash)}
+.tok{font-family:var(--mono);font-size:10px;padding:1px 4px;border-radius:2px;background:var(--surface);border:1px solid var(--rule-strong);color:var(--ink);cursor:pointer;height:fit-content}
+.tok:hover{border-color:var(--accent);color:var(--accent)}
+.mxfoot{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--ink-3);margin-top:7px;padding-left:22px}
+
+/* ---------- detail drawer ---------- */
+.drawer{position:fixed;inset:0;z-index:60;display:none}
+.drawer[open]{display:block}
+.drawer .scrim{position:absolute;inset:0;background:rgba(10,14,18,.42)}
+.drawer .sheet{position:absolute;right:0;top:0;bottom:0;width:min(500px,100%);background:var(--surface);border-left:1px solid var(--rule);box-shadow:var(--shadow);overflow-y:auto;padding:22px 24px 40px}
+.drawer h3{font-size:19px;margin:6px 0 4px}
+.drawer .close{position:absolute;top:14px;right:18px;background:none;border:0;font-size:19px;color:var(--ink-3);cursor:pointer;line-height:1}
+.drawer .close:hover{color:var(--accent)}
+.drow{padding:11px 0;border-top:1px solid var(--rule);font-size:13px;line-height:1.55;color:var(--ink-2)}
+.drow .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
+
+.caveat{background:var(--amber-wash);border:1px solid color-mix(in srgb,var(--amber) 30%,transparent);border-radius:3px;padding:11px 13px;font-size:12.5px;color:var(--ink-2);line-height:1.55;margin:16px 0}
+.caveat b{color:var(--ink);font-weight:600}
+.saved{font-size:11px;color:var(--green);font-family:var(--mono)}
+
+@media (max-width:860px){
+  .shell{flex-direction:column}
+  .rail{position:static;height:auto;flex:none;border-right:0;border-bottom:1px solid var(--rule)}
+  .nav{flex-direction:row;overflow-x:auto;padding:8px 10px;gap:3px}
+  .nav a{white-space:nowrap}
+  .nav a .n{display:none}
+  .railfoot{flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  main{padding:22px 16px 60px}
+  .topbar{padding:9px 16px;gap:16px}
+  .gantt-row{grid-template-columns:110px 1fr;gap:9px}
+}
+</style>
+
+<div class="shell">
+  <aside class="rail">
+    <div class="brand">
+      <div class="crest">City of Stonnington</div>
+      <h1>Local Law Review</h1>
+      <div class="sub">Replacing General Local Law 2018 (No.&nbsp;1) before it sunsets</div>
+    </div>
+    <nav class="nav" id="nav">
+      <a href="#program"><span class="n">01</span>Program</a>
+      <a href="#clauses"><span class="n">02</span>Clause register</a>
+      <a href="#proposals"><span class="n">03</span>Proposals</a>
+      <a href="#engagement"><span class="n">04</span>Engagement</a>
+      <a href="#pilots"><span class="n">05</span>Pilots</a>
+      <a href="#risks"><span class="n">06</span>Risks &amp; decisions</a>
+    </nav>
+    <div class="railfoot">
+      <div class="who">
+        <label for="initials">You</label>
+        <input id="initials" type="text" maxlength="4" placeholder="––" aria-label="Your initials, stamped on changes you make">
+      </div>
+      <div class="dbstat"><span class="dot" id="dbdot"></span><span id="dbtext">Connecting…</span></div>
+      <button class="themebtn" id="themebtn" type="button">Theme</button>
+    </div>
+  </aside>
+  <div class="main">
+    <div class="topbar" id="topbar"></div>
+    <main id="view"></main>
+  </div>
+</div>
+
+<div class="drawer" id="drawer">
+  <div class="scrim" data-close></div>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+    <button class="close" type="button" data-close aria-label="Close">&times;</button>
+    <div id="drawer-body"></div>
+  </div>
+</div>
+
+<script>
+const D = {"generated":"2026-09-12","clauses":[{"id":"1","part":1,"partTitle":"Preliminary","title":"Name and Objectives of Local Law","tags":["D"],"owner":"Governance & Legal","proposals":[],"disposition":"Retain"},{"id":"2","part":1,"partTitle":"Preliminary","title":"Authorising Provision of this Local Law","tags":["D","X"],"owner":"Governance & Legal","proposals":["P20"],"disposition":"Revoke"},{"id":"3","part":1,"partTitle":"Preliminary","title":"Commencement of this Local Law","tags":["D"],"owner":"Governance & Legal","proposals":[],"disposition":"Retain"},{"id":"4","part":1,"partTitle":"Preliminary","title":"Revocation Date of this Local Law","tags":["D","X"],"owner":"Governance & Legal","proposals":[],"disposition":"Revoke"},{"id":"5","part":1,"partTitle":"Preliminary","title":"Definition of Words Used in this Local Law","tags":["D","X"],"owner":"Governance & Legal","proposals":["P20"],"disposition":"Rewrite"},{"id":"6","part":1,"partTitle":"Preliminary","title":"Application of the Local Law","tags":["D"],"owner":"Governance & Legal","proposals":[],"disposition":"Retain"},{"id":"7","part":1,"partTitle":"Preliminary","title":"Council Positions","tags":["D"],"owner":"Governance & Legal","proposals":[],"disposition":"Retain"},{"id":"8","part":1,"partTitle":"Preliminary","title":"Conflict with Other Legislation","tags":["D"],"owner":"Governance & Legal","proposals":[],"disposition":"Retain"},{"id":"9","part":2,"partTitle":"Administration of this Local Law","title":"Exercise of Discretions","tags":["D"],"owner":"Governance & Legal","proposals":[],"disposition":"Retain"},{"id":"10","part":2,"partTitle":"Administration of this Local Law","title":"Register of Determinations","tags":["D"],"owner":"Governance & Legal","proposals":[],"disposition":"Retain"},{"id":"11","part":2,"partTitle":"Administration of this Local Law","title":"Direction of Council: Notice to Comply","tags":["N"],"owner":"Governance & Legal","proposals":[],"disposition":"Amend"},{"id":"12","part":2,"partTitle":"Administration of this Local Law","title":"Time to Comply","tags":["N"],"owner":"Governance & Legal","proposals":[],"disposition":"Amend"},{"id":"13","part":2,"partTitle":"Administration of this Local Law","title":"Service of Notice to Comply","tags":["N"],"owner":"Governance & Legal","proposals":[],"disposition":"Not started"},{"id":"14","part":2,"partTitle":"Administration of this Local Law","title":"Failure to Comply with a Notice to Comply","tags":["N","I"],"owner":"Governance & Legal","proposals":[],"disposition":"Not started"},{"id":"15","part":2,"partTitle":"Administration of this Local Law","title":"Power of Authorised Officers to Act in Urgent Circumstances","tags":["N"],"owner":"Governance & Legal","proposals":[],"disposition":"Not started"},{"id":"16","part":2,"partTitle":"Administration of this Local Law","title":"Appeals","tags":["D"],"owner":"Governance & Legal","proposals":["P23"],"disposition":"Amend"},{"id":"17","part":2,"partTitle":"Administration of this Local Law","title":"Compliance with Directions and Notices","tags":["N"],"owner":"Governance & Legal","proposals":[],"disposition":"Not started"},{"id":"18","part":2,"partTitle":"Administration of this Local Law","title":"Delegations and Authorisations","tags":["D"],"owner":"Governance & Legal","proposals":[],"disposition":"Not started"},{"id":"19","part":2,"partTitle":"Administration of this Local Law","title":"Incorporation of Documents","tags":["D"],"owner":"Governance & Legal","proposals":[],"disposition":"Not started"},{"id":"20","part":3,"partTitle":"The Common Seal","title":"Purpose of the Common Seal","tags":["D","X"],"owner":"Governance & Legal","proposals":["P20"],"disposition":"Revoke"},{"id":"21","part":3,"partTitle":"The Common Seal","title":"Who Keeps the Common Seal","tags":["D","X"],"owner":"Governance & Legal","proposals":["P20"],"disposition":"Revoke"},{"id":"22","part":3,"partTitle":"The Common Seal","title":"Signatures to Accompany the Common Seal","tags":["D","X"],"owner":"Governance & Legal","proposals":["P20"],"disposition":"Revoke"},{"id":"23","part":3,"partTitle":"The Common Seal","title":"Affixing the Common Seal","tags":["D","X"],"owner":"Governance & Legal","proposals":["P20"],"disposition":"Revoke"},{"id":"24","part":3,"partTitle":"The Common Seal","title":"Unauthorised Use of the Common Seal","tags":["I","X"],"owner":"Governance & Legal","proposals":["P20"],"disposition":"Revoke"},{"id":"104","part":5,"partTitle":"Management of Drains","title":"Interference with Council Drains, Sewers or Similar","tags":["P","I"],"owner":"City Works & Assets","proposals":[],"disposition":"Retain"},{"id":"105","part":5,"partTitle":"Management of Drains","title":"Maintenance of Drains","tags":["N"],"owner":"City Works & Assets","proposals":[],"disposition":"Retain"},{"id":"106","part":5,"partTitle":"Management of Drains","title":"Drainage of Properties","tags":["N"],"owner":"City Works & Assets","proposals":[],"disposition":"Retain"},{"id":"107","part":6,"partTitle":"Vehicle Crossings","title":"Vehicle Crossings","tags":["N","I"],"owner":"City Works & Assets","proposals":["P14"],"disposition":"Retain"},{"id":"108","part":6,"partTitle":"Vehicle Crossings","title":"Temporary Vehicle Crossings","tags":["N","I"],"owner":"City Works & Assets","proposals":[],"disposition":"Retain"},{"id":"109","part":6,"partTitle":"Vehicle Crossings","title":"Repair of Vehicle Crossings","tags":["N"],"owner":"City Works & Assets","proposals":[],"disposition":"Retain"},{"id":"110","part":7,"partTitle":"Protection of Council Land","title":"Defacing/Damaging Council Land","tags":["P","I"],"owner":"Parks & Environment","proposals":["P04"],"disposition":"Not started"},{"id":"111","part":7,"partTitle":"Protection of Council Land","title":"Lighting Fires","tags":["P","I"],"owner":"Parks & Environment","proposals":[],"disposition":"Not started"},{"id":"112","part":7,"partTitle":"Protection of Council Land","title":"Trees or Plants Causing Damage to Council Land","tags":["N"],"owner":"Parks & Environment","proposals":[],"disposition":"Retain"},{"id":"113","part":7,"partTitle":"Protection of Council Land","title":"Trees and Plants on Council Land","tags":["P","I"],"owner":"Parks & Environment","proposals":["P04"],"disposition":"Not started"},{"id":"114","part":7,"partTitle":"Protection of Council Land","title":"Temporary Buildings on a Road","tags":["P","I"],"owner":"Parks & Environment","proposals":[],"disposition":"Not started"},{"id":"115","part":7,"partTitle":"Protection of Council Land","title":"Damage to Kerbs, Paths and Other Assets from Building Work","tags":["P","I"],"owner":"Parks & Environment","proposals":["P11"],"disposition":"Amend"},{"id":"116","part":8,"partTitle":"Use of Municipal Places","title":"Prohibition of Entry","tags":["P","I"],"owner":"Recreation & Leisure","proposals":[],"disposition":"Not started"},{"id":"117","part":8,"partTitle":"Use of Municipal Places","title":"Behaviour","tags":["I"],"owner":"Recreation & Leisure","proposals":["P22"],"disposition":"Under review"},{"id":"118","part":8,"partTitle":"Use of Municipal Places","title":"Terms and Conditions of Admission to, or Membership of, a Municipal Place","tags":["I"],"owner":"Recreation & Leisure","proposals":[],"disposition":"Retain"},{"id":"119","part":8,"partTitle":"Use of Municipal Places","title":"Prohibited Articles","tags":["I"],"owner":"Recreation & Leisure","proposals":[],"disposition":"Under review"},{"id":"120","part":8,"partTitle":"Use of Municipal Places","title":"Directions","tags":["N","I"],"owner":"Recreation & Leisure","proposals":["P23"],"disposition":"Rewrite"},{"id":"121","part":9,"partTitle":"Council Reserves","title":"Access to Council Reserves","tags":["P","I"],"owner":"Recreation & Leisure","proposals":[],"disposition":"Under review"},{"id":"122","part":9,"partTitle":"Council Reserves","title":"Use of Council Reserves","tags":["P","I"],"owner":"Recreation & Leisure","proposals":["P18"],"disposition":"Amend"},{"id":"123","part":9,"partTitle":"Council Reserves","title":"Restrictions","tags":["N","I"],"owner":"Recreation & Leisure","proposals":["P01","P13","P24"],"disposition":"Amend"},{"id":"124","part":10,"partTitle":"Roads, Public Places and Council Land","title":"Application","tags":["D"],"owner":"Local Laws & Compliance","proposals":[],"disposition":"Retain"},{"id":"125","part":10,"partTitle":"Roads, Public Places and Council Land","title":"Shopping Trolleys","tags":["I"],"owner":"Local Laws & Compliance","proposals":["P05"],"disposition":"Amend"},{"id":"126","part":10,"partTitle":"Roads, Public Places and Council Land","title":"Footpath Trading Policy","tags":["P","I"],"owner":"Local Laws & Compliance","proposals":["P02","P19"],"disposition":"Amend"},{"id":"127","part":10,"partTitle":"Roads, Public Places and Council Land","title":"Obstructions","tags":["P","I"],"owner":"Local Laws & Compliance","proposals":["P01","P02","P14","P19"],"disposition":"Amend"},{"id":"128","part":10,"partTitle":"Roads, Public Places and Council Land","title":"Repairing Vehicles","tags":["I"],"owner":"Local Laws & Compliance","proposals":[],"disposition":"Retain"},{"id":"129","part":10,"partTitle":"Roads, Public Places and Council Land","title":"Consumption of Liquor","tags":["P","N","I"],"owner":"Local Laws & Compliance","proposals":["P24"],"disposition":"Amend"},{"id":"130","part":10,"partTitle":"Roads, Public Places and Council Land","title":"Mobile Cranes","tags":["P","I"],"owner":"Local Laws & Compliance","proposals":[],"disposition":"Under review"},{"id":"131","part":10,"partTitle":"Roads, Public Places and Council Land","title":"Hoarding, Scaffolding and Overhead Protective Awning","tags":["P","I"],"owner":"Local Laws & Compliance","proposals":[],"disposition":"Under review"},{"id":"132","part":10,"partTitle":"Roads, Public Places and Council Land","title":"Bulk Rubbish and Storage Containers Left on Roads","tags":["P","I"],"owner":"Local Laws & Compliance","proposals":[],"disposition":"Under review"},{"id":"133","part":10,"partTitle":"Roads, Public Places and Council Land","title":"Clothing Bins","tags":["P","I"],"owner":"Local Laws & Compliance","proposals":["P15"],"disposition":"Amend"},{"id":"134","part":10,"partTitle":"Roads, Public Places and Council Land","title":"Unregistered, Abandoned and Obstructing Vehicles","tags":["I"],"owner":"Local Laws & Compliance","proposals":[],"disposition":"Under review"},{"id":"135","part":10,"partTitle":"Roads, Public Places and Council Land","title":"Parking Permits","tags":["P","I"],"owner":"Local Laws & Compliance","proposals":["P14"],"disposition":"Amend"},{"id":"136","part":10,"partTitle":"Roads, Public Places and Council Land","title":"Filming","tags":["P","I"],"owner":"Local Laws & Compliance","proposals":["P12"],"disposition":"Amend"},{"id":"137","part":10,"partTitle":"Roads, Public Places and Council Land","title":"Toy Vehicles","tags":["P","I","X"],"owner":"Local Laws & Compliance","proposals":["P01"],"disposition":"Amend"},{"id":"138","part":11,"partTitle":"Street Selling, Collections and Distributions","title":"Itinerant Trading","tags":["P","I"],"owner":"Economic Development","proposals":[],"disposition":"Not started"},{"id":"139","part":11,"partTitle":"Street Selling, Collections and Distributions","title":"Street Appeals","tags":["P","I"],"owner":"Economic Development","proposals":[],"disposition":"Not started"},{"id":"140","part":11,"partTitle":"Street Selling, Collections and Distributions","title":"Street Promotions","tags":["P","I"],"owner":"Economic Development","proposals":[],"disposition":"Not started"},{"id":"141","part":11,"partTitle":"Street Selling, Collections and Distributions","title":"Processions, Street Festivals and Street Parties","tags":["P","I"],"owner":"Economic Development","proposals":[],"disposition":"Not started"},{"id":"142","part":12,"partTitle":"Protection of the Amenity of the Municipal District","title":"Property Numbers","tags":["N","I"],"owner":"City Amenity","proposals":[],"disposition":"Retain"},{"id":"143","part":12,"partTitle":"Protection of the Amenity of the Municipal District","title":"Camping and Camping on Council Land or a Road","tags":["P","I"],"owner":"City Amenity","proposals":["P08"],"disposition":"Amend"},{"id":"144","part":12,"partTitle":"Protection of the Amenity of the Municipal District","title":"Noise","tags":["N","I"],"owner":"City Amenity","proposals":["P06","P07","P22"],"disposition":"Amend"},{"id":"145","part":12,"partTitle":"Protection of the Amenity of the Municipal District","title":"Advertisements","tags":["P","N","I"],"owner":"City Amenity","proposals":["P16"],"disposition":"Amend"},{"id":"146","part":12,"partTitle":"Protection of the Amenity of the Municipal District","title":"Mobile Billboards","tags":["P","I"],"owner":"City Amenity","proposals":[],"disposition":"Under review"},{"id":"147","part":12,"partTitle":"Protection of the Amenity of the Municipal District","title":"Incinerators and Fires","tags":["P","I"],"owner":"City Amenity","proposals":[],"disposition":"Not started"},{"id":"148","part":12,"partTitle":"Protection of the Amenity of the Municipal District","title":"Chimneys","tags":["N","I"],"owner":"City Amenity","proposals":[],"disposition":"Retain"},{"id":"149","part":12,"partTitle":"Protection of the Amenity of the Municipal District","title":"Directive Powers","tags":["N","I"],"owner":"City Amenity","proposals":["P23"],"disposition":"Rewrite"},{"id":"150","part":12,"partTitle":"Protection of the Amenity of the Municipal District","title":"Unsightly Premises","tags":["N","I"],"owner":"City Amenity","proposals":[],"disposition":"Under review"},{"id":"151","part":12,"partTitle":"Protection of the Amenity of the Municipal District","title":"Fencing of Vacant Land","tags":["N","I"],"owner":"City Amenity","proposals":[],"disposition":"Under review"},{"id":"152","part":12,"partTitle":"Protection of the Amenity of the Municipal District","title":"Securing and Fencing Dilapidated Land","tags":["N","I"],"owner":"City Amenity","proposals":[],"disposition":"Under review"},{"id":"153","part":12,"partTitle":"Protection of the Amenity of the Municipal District","title":"Vermin and Noxious Weeds","tags":["N","I"],"owner":"City Amenity","proposals":[],"disposition":"Retain"},{"id":"154","part":12,"partTitle":"Protection of the Amenity of the Municipal District","title":"Dangerous Land","tags":["N","I"],"owner":"City Amenity","proposals":[],"disposition":"Not started"},{"id":"155","part":12,"partTitle":"Protection of the Amenity of the Municipal District","title":"Motor Vehicles and Machinery","tags":["N","I"],"owner":"City Amenity","proposals":[],"disposition":"Under review"},{"id":"156","part":12,"partTitle":"Protection of the Amenity of the Municipal District","title":"Overhanging and Encroaching Trees","tags":["N","I"],"owner":"City Amenity","proposals":[],"disposition":"Under review"},{"id":"157","part":12,"partTitle":"Protection of the Amenity of the Municipal District","title":"Dilapidated Buildings","tags":["N","I"],"owner":"City Amenity","proposals":[],"disposition":"Under review"},{"id":"158","part":13,"partTitle":"Building Activity","title":"Building Definitions","tags":["D"],"owner":"City Works & Assets","proposals":[],"disposition":"Retain"},{"id":"159","part":13,"partTitle":"Building Activity","title":"Building Activity Hours","tags":["I"],"owner":"City Works & Assets","proposals":["P10"],"disposition":"Amend"},{"id":"160","part":13,"partTitle":"Building Activity","title":"Dust Control","tags":["N","I"],"owner":"City Works & Assets","proposals":["P10"],"disposition":"Under review"},{"id":"161","part":13,"partTitle":"Building Activity","title":"Spoil from Building Sites","tags":["N","I"],"owner":"City Works & Assets","proposals":["P10"],"disposition":"Under review"},{"id":"162","part":13,"partTitle":"Building Activity","title":"Building Material","tags":["N","I"],"owner":"City Works & Assets","proposals":["P10"],"disposition":"Under review"},{"id":"163","part":14,"partTitle":"Tree Protection","title":"Tree Protection","tags":["P","I"],"owner":"Parks & Environment","proposals":["P03"],"disposition":"Amend"},{"id":"164","part":15,"partTitle":"Animals and Birds","title":"Application of Part","tags":["D"],"owner":"Local Laws & Compliance","proposals":[],"disposition":"Retain"},{"id":"165","part":15,"partTitle":"Animals and Birds","title":"Conditions Under Which Animals May be Kept","tags":["P","I"],"owner":"Local Laws & Compliance","proposals":["P09"],"disposition":"Amend"},{"id":"166","part":15,"partTitle":"Animals and Birds","title":"Keeping of Animals Policy","tags":["P","I"],"owner":"Local Laws & Compliance","proposals":["P09"],"disposition":"Amend"},{"id":"167","part":15,"partTitle":"Animals and Birds","title":"Animal Noises","tags":["N","I"],"owner":"Local Laws & Compliance","proposals":[],"disposition":"Under review"},{"id":"168","part":15,"partTitle":"Animals and Birds","title":"Animal Excrement","tags":["I"],"owner":"Local Laws & Compliance","proposals":[],"disposition":"Under review"},{"id":"169","part":15,"partTitle":"Animals and Birds","title":"Wasp Nest(s) and Bee Swarm(s) to be Removed","tags":["N","I"],"owner":"Local Laws & Compliance","proposals":[],"disposition":"Under review"},{"id":"170","part":15,"partTitle":"Animals and Birds","title":"Pest Animals","tags":["N","I"],"owner":"Local Laws & Compliance","proposals":[],"disposition":"Under review"},{"id":"171","part":15,"partTitle":"Animals and Birds","title":"Fencing of Dogs","tags":["N","I"],"owner":"Local Laws & Compliance","proposals":[],"disposition":"Under review"},{"id":"172","part":15,"partTitle":"Animals and Birds","title":"Feeding of Animals and Birds","tags":["I"],"owner":"Local Laws & Compliance","proposals":[],"disposition":"Retain"},{"id":"173","part":16,"partTitle":"Sanitation","title":"Supply and Use of Waste Receptacles","tags":["I"],"owner":"Waste & Recycling","proposals":["P17"],"disposition":"Amend"},{"id":"174","part":16,"partTitle":"Sanitation","title":"Domestic and Recycling Waste Collection","tags":["I"],"owner":"Waste & Recycling","proposals":["P17"],"disposition":"Amend"},{"id":"175","part":16,"partTitle":"Sanitation","title":"Trade Waste Bins and Hoppers","tags":["P","I"],"owner":"Waste & Recycling","proposals":[],"disposition":"Under review"},{"id":"176","part":16,"partTitle":"Sanitation","title":"Council Waste Acceptance Facilities","tags":["I"],"owner":"Waste & Recycling","proposals":[],"disposition":"Retain"},{"id":"177","part":16,"partTitle":"Sanitation","title":"Directive Powers","tags":["N","I"],"owner":"Waste & Recycling","proposals":["P23"],"disposition":"Rewrite"},{"id":"178","part":17,"partTitle":"Permits","title":"Application for a Permit","tags":["P","D"],"owner":"Governance & Legal","proposals":[],"disposition":"Under review"},{"id":"179","part":17,"partTitle":"Permits","title":"Consideration of Applications","tags":["P","D"],"owner":"Governance & Legal","proposals":[],"disposition":"Under review"},{"id":"180","part":17,"partTitle":"Permits","title":"Permits May be Conditional","tags":["P","D"],"owner":"Governance & Legal","proposals":[],"disposition":"Under review"},{"id":"181","part":17,"partTitle":"Permits","title":"Power to Amend Conditions","tags":["P","D"],"owner":"Governance & Legal","proposals":[],"disposition":"Not started"},{"id":"182","part":17,"partTitle":"Permits","title":"Security Bonds","tags":["P","D"],"owner":"Governance & Legal","proposals":["P11"],"disposition":"Not started"},{"id":"183","part":17,"partTitle":"Permits","title":"Register of Permits","tags":["P","D"],"owner":"Governance & Legal","proposals":[],"disposition":"Retain"},{"id":"184","part":17,"partTitle":"Permits","title":"Duration of Permits","tags":["P","D"],"owner":"Governance & Legal","proposals":[],"disposition":"Retain"},{"id":"185","part":17,"partTitle":"Permits","title":"Correction of Permits","tags":["P","D"],"owner":"Governance & Legal","proposals":[],"disposition":"Not started"},{"id":"186","part":17,"partTitle":"Permits","title":"Cancellation, Suspension or Amendment of Permits","tags":["P","D"],"owner":"Governance & Legal","proposals":[],"disposition":"Not started"},{"id":"187","part":17,"partTitle":"Permits","title":"Transferability of Permits","tags":["P","D"],"owner":"Governance & Legal","proposals":[],"disposition":"Not started"},{"id":"188","part":17,"partTitle":"Permits","title":"Permit Issue and Refusal","tags":["P","D"],"owner":"Governance & Legal","proposals":[],"disposition":"Not started"},{"id":"189","part":17,"partTitle":"Permits","title":"Exemptions","tags":["P","D"],"owner":"Governance & Legal","proposals":[],"disposition":"Not started"},{"id":"190","part":17,"partTitle":"Permits","title":"Information","tags":["P","I"],"owner":"Governance & Legal","proposals":[],"disposition":"Not started"},{"id":"191","part":18,"partTitle":"Fees, Charges and Costs","title":"Setting Fees and Charges","tags":["D"],"owner":"Governance & Legal","proposals":[],"disposition":"Retain"},{"id":"192","part":18,"partTitle":"Fees, Charges and Costs","title":"Differential or Structured Fees and Charges","tags":["D"],"owner":"Governance & Legal","proposals":[],"disposition":"Retain"},{"id":"193","part":18,"partTitle":"Fees, Charges and Costs","title":"Waiver or Alteration to Fees and Charges","tags":["D"],"owner":"Governance & Legal","proposals":[],"disposition":"Not started"},{"id":"194","part":19,"partTitle":"Infringement Notices","title":"Purpose","tags":["D"],"owner":"Local Laws & Compliance","proposals":[],"disposition":"Retain"},{"id":"195","part":19,"partTitle":"Infringement Notices","title":"Infringement Notice","tags":["I"],"owner":"Local Laws & Compliance","proposals":["P21"],"disposition":"Amend"},{"id":"196","part":20,"partTitle":"Enforcement, Offences and Prosecutions","title":"Recovery of Costs","tags":["D"],"owner":"Local Laws & Compliance","proposals":[],"disposition":"Retain"},{"id":"197","part":20,"partTitle":"Enforcement, Offences and Prosecutions","title":"Offences","tags":["I"],"owner":"Local Laws & Compliance","proposals":[],"disposition":"Retain"},{"id":"198","part":20,"partTitle":"Enforcement, Offences and Prosecutions","title":"General Penalties","tags":["I"],"owner":"Local Laws & Compliance","proposals":["P21"],"disposition":"Amend"},{"id":"199","part":20,"partTitle":"Enforcement, Offences and Prosecutions","title":"Power to Impound","tags":["I"],"owner":"Local Laws & Compliance","proposals":[],"disposition":"Retain"},{"id":"200","part":20,"partTitle":"Enforcement, Offences and Prosecutions","title":"Impersonating Council Staff","tags":["I"],"owner":"Local Laws & Compliance","proposals":[],"disposition":"Retain"}],"proposals":[{"id":"P01","title":"E-rideables and share scheme parking on footpaths","clauses":["137","127","123"],"unit":"Transport & Parking","raised":"2022-11","source":"Operations — parking officers","impact":5,"effort":4,"status":"In scope","sensitivity":"High","pilot":"PL02","note":"Cl.137 defines a 'wheeled recreational vehicle' around mini bikes and Segways and predates hire e-scooters entirely. Need a head of power for corral parking, impoundment and operator agreements that does not conflict with the Road Safety Road Rules."},{"id":"P02","title":"Make parklets and streateries a permanent permit class","clauses":["126","127"],"unit":"Economic Development","raised":"2021-06","source":"Traders associations (Chapel St, Glenferrie Rd)","impact":5,"effort":3,"status":"In scope","sensitivity":"High","pilot":"PL01","note":"Outdoor dining structures were stood up under emergency arrangements and have run on extensions since. The Footpath Trading Policy is incorporated under cl.19(3), so the policy and the law have to move together."},{"id":"P03","title":"Lower the Significant Tree trigger and add a canopy test","clauses":["163"],"unit":"Parks & Environment","raised":"2020-09","source":"Urban Forest Strategy action 4.2","impact":5,"effort":4,"status":"In scope","sensitivity":"High","pilot":null,"note":"Current trigger is 140cm circumference at 1.4m (or 180cm at base). Arborists argue this misses medium-maturity canopy on small lots. Options: lower threshold, add a canopy-spread test, or a species schedule."},{"id":"P04","title":"Bring the Nature Strip Planting Policy inside the law","clauses":["110","113"],"unit":"Parks & Environment","raised":"2023-03","source":"Councillor request","impact":3,"effort":2,"status":"In scope","sensitivity":"Medium","pilot":"PL05","note":"Cl.110(4) refers to the Nature Strip Planting Policy but, unlike the Footpath Trading and Keeping of Animals policies, it is not an incorporated document under cl.19. Inconsistent enforceability."},{"id":"P05","title":"Remove the 25-trolley exemption for shopping trolleys","clauses":["125"],"unit":"Local Laws & Compliance","raised":"2019-08","source":"Compliance team — recurring hotspots","impact":3,"effort":2,"status":"Triage","sensitivity":"Low","pilot":null,"note":"Cl.125(2) exempts operators with 25 trolleys or fewer, which covers the small supermarkets generating most of the abandoned-trolley reports."},{"id":"P06","title":"Align noise Table 2 with the EPA Environment Reference Standard","clauses":["144"],"unit":"City Amenity","raised":"2021-02","source":"Legal — advice on overlapping regimes","impact":4,"effort":4,"status":"In scope","sensitivity":"Medium","pilot":null,"note":"Table 2 prohibited hours sit alongside the Environment Protection Regulations 2021 residential noise provisions. Officers report confusion about which instrument to use; risk of an inconsistency argument on review."},{"id":"P07","title":"Review the 65dB amplified-music standard for entertainment precincts","clauses":["144"],"unit":"City Amenity","raised":"2022-04","source":"Hospitality operators + resident groups","impact":4,"effort":4,"status":"In scope","sensitivity":"High","pilot":"PL04","note":"Cl.144(6) sets speaker placement rules and 65dB (LA max) at 2m from an adjoining facade. Contested from both directions in Prahran and Windsor."},{"id":"P08","title":"Camping provisions and the Human Rights Charter","clauses":["143"],"unit":"Community & Wellbeing","raised":"2020-07","source":"Legal + Homelessness Working Group","impact":5,"effort":3,"status":"In scope","sensitivity":"Critical","pilot":null,"note":"Cl.143(3)-(4) prohibit camping and leaving personal effects on Council land. Charter s.12 (freedom of movement), s.13 (privacy) and s.17 (protection of families) engagement must be documented, with an assertive-outreach-first operating protocol."},{"id":"P09","title":"Cat containment / curfew under the Keeping of Animals Policy","clauses":["165","166"],"unit":"Local Laws & Compliance","raised":"2019-11","source":"Councillor notice of motion (lapsed)","impact":4,"effort":4,"status":"In scope","sensitivity":"Critical","pilot":"PL03","note":"Made under s.42 Domestic Animals Act 1994. Neighbouring councils have moved; this is the single most likely source of submission volume."},{"id":"P10","title":"Building activity hours and construction management on major works","clauses":["159","160","161","162"],"unit":"City Works & Assets","raised":"2022-08","source":"Building surveying + resident complaints","impact":4,"effort":3,"status":"In scope","sensitivity":"Medium","pilot":"PL06","note":"Requests to allow extended hours for concrete pours and crane work in exchange for a construction management plan and community liaison obligations."},{"id":"P11","title":"Reset asset protection bond levels and exemption classes","clauses":["115","182"],"unit":"City Works & Assets","raised":"2023-01","source":"Assets — cost recovery review","impact":3,"effort":2,"status":"Triage","sensitivity":"Low","pilot":null,"note":"Bond levels are set through the Procedure and Protocol Manual. Confirm whether the quantum belongs in the law, the manual or the fees schedule."},{"id":"P12","title":"Tiered filming permits for small-crew and social content","clauses":["136"],"unit":"Economic Development","raised":"2021-10","source":"Film Vic liaison + internal","impact":2,"effort":2,"status":"Triage","sensitivity":"Low","pilot":null,"note":"Cl.136 captures any commercial filming on Council land. A single-operator shoot and a feature unit are treated identically."},{"id":"P13","title":"Drone operation over Council reserves","clauses":["123"],"unit":"Recreation & Leisure","raised":"2020-02","source":"Reserve bookings team","impact":3,"effort":3,"status":"Triage","sensitivity":"Medium","pilot":null,"note":"Cl.123(1)(a) bans drones unless the reserve is exempted in the Procedure and Protocol Manual. CASA holds airspace control — confirm the limits of Council's power over take-off and landing only."},{"id":"P14","title":"EV charging cables across footpaths and kerbside charging","clauses":["127","135","107"],"unit":"Transport & Parking","raised":"2023-05","source":"Climate & Energy team","impact":4,"effort":4,"status":"In scope","sensitivity":"Medium","pilot":"PL07","note":"Residents without off-street parking are running cables across footpaths. Currently an obstruction under cl.127 with no permit pathway. Interacts with the residential parking permit scheme."},{"id":"P15","title":"Clothing bins — separate charitable from commercial collection","clauses":["133"],"unit":"Waste & Recycling","raised":"2019-05","source":"Compliance","impact":2,"effort":2,"status":"Parked","sensitivity":"Low","pilot":null,"note":"Sitting since 2019. Dumping around commercial bins drives most of the cost; a permit condition set may be enough without a drafting change."},{"id":"P16","title":"Real estate signage over footpaths and on facades","clauses":["145"],"unit":"Urban Planning","raised":"2018-12","source":"Officer report (not progressed)","impact":2,"effort":2,"status":"Parked","sensitivity":"Medium","pilot":null,"note":"Cl.145(3) requires a permit for signage over a verandah or footpath. Enforcement is effectively complaint-driven; industry expects a standing arrangement."},{"id":"P17","title":"Bin presentation times and bin storage on nature strips","clauses":["173","174"],"unit":"Waste & Recycling","raised":"2022-02","source":"Waste services + amenity officers","impact":3,"effort":2,"status":"Triage","sensitivity":"Medium","pilot":null,"note":"No presentation window in the current law. Four-stream rollout has increased bins left out; interacts with the state's FOGO requirements."},{"id":"P18","title":"Commercial use of open space — personal training and boot camps","clauses":["122"],"unit":"Recreation & Leisure","raised":"2021-09","source":"Open space team","impact":3,"effort":2,"status":"Triage","sensitivity":"Medium","pilot":null,"note":"Cl.122(o) requires a permit for paid personal training. Group size, turf wear and fee structure are unresolved."},{"id":"P19","title":"Accessible footpath clear width as a hard standard","clauses":["126","127"],"unit":"Community & Wellbeing","raised":"2022-06","source":"Disability Advisory Committee","impact":4,"effort":3,"status":"In scope","sensitivity":"Medium","pilot":"PL01","note":"The Disability Advisory Committee has asked for a minimum continuous accessible path set in the law rather than the policy, so it survives policy amendment."},{"id":"P20","title":"Repeal spent Common Seal and machinery clauses","clauses":["20","21","22","23","24","2","5"],"unit":"Governance & Legal","raised":"2023-09","source":"Governance — post-2023 amendment tidy-up","impact":2,"effort":1,"status":"In scope","sensitivity":"Low","pilot":null,"note":"Part 4 was repealed in 2023 and moved to the Governance Rules. Part 3 largely duplicates the Governance Rules. Definitions still reference the Local Government Act 1989 throughout."},{"id":"P21","title":"Infringement schedule and penalty level review","clauses":["195","198"],"unit":"Local Laws & Compliance","raised":"2023-07","source":"Compliance — deterrence analysis","impact":4,"effort":3,"status":"In scope","sensitivity":"Medium","pilot":null,"note":"Cl.198 caps at 20 penalty units, with 2 units per day for continuing offences. Test whether current infringement levels deter tree removal and illegal works, where the commercial gain exceeds the penalty."},{"id":"P22","title":"Short-stay accommodation amenity and party-house noise","clauses":["144","117"],"unit":"City Amenity","raised":"2022-12","source":"Resident complaints + Councillor request","impact":4,"effort":4,"status":"Triage","sensitivity":"High","pilot":null,"note":"State short-stay levy and the Owners Corporations regime cover part of this. Need legal advice on what is left for a local law to do before scoping drafting."},{"id":"P23","title":"Consolidate directive powers and add a review right","clauses":["120","149","177","16"],"unit":"Governance & Legal","raised":"2024-02","source":"Internal audit — administrative fairness","impact":3,"effort":3,"status":"Triage","sensitivity":"Medium","pilot":null,"note":"Directive powers appear in at least four places with different wording. Cl.16 gives 28 days to be heard but does not stay the notice. Audit recommended one consistent procedural code."},{"id":"P24","title":"Designated alcohol-free areas — evidence review","clauses":["129","123"],"unit":"Local Laws & Compliance","raised":"2020-11","source":"Victoria Police liaison","impact":3,"effort":3,"status":"Parked","sensitivity":"High","pilot":null,"note":"Blanket prohibition under cl.129 with exemptions by permit. Police support retention; equity concerns raised about enforcement patterns."}],"program":{"law":{"title":"General Local Law 2018 (No. 1)","council":"City of Stonnington","commenced":"2018-07-20","sunset":"2028-07-19","amended":"2023 (Part 4 repealed — moved to Governance Rules)","madeUnder":"s.111 Local Government Act 1989 and s.42 Domestic Animals Act 1994","incorporated":["Procedure and Protocol Manual","Keeping of Animals Policy","Footpath Trading Policy"]},"phases":[{"id":"F1","name":"Initiate & diagnose","start":"2026-09-01","end":"2027-02-26","lead":"Governance & Legal","detail":"Project plan, governance, clause-by-clause internal review, triage of the held-over backlog."},{"id":"F2","name":"Evidence & benchmarking","start":"2026-10-01","end":"2027-03-31","lead":"Local Laws & Compliance","detail":"Enforcement and request data, permit volumes, VCAT and complaint history, comparison against neighbouring councils' current laws."},{"id":"F3","name":"Community & stakeholder engagement","start":"2027-02-15","end":"2027-05-28","lead":"Community & Wellbeing","detail":"Issues-stage engagement under the Community Engagement Policy — before positions are fixed."},{"id":"F4","name":"Pilots & operational testing","start":"2026-11-02","end":"2027-06-30","lead":"Local Laws & Compliance","detail":"Test proposed changes operationally under existing powers, permit conditions or policy, so the drafting rests on evidence."},{"id":"F5","name":"Policy settlement","start":"2027-05-03","end":"2027-08-31","lead":"Governance & Legal","detail":"Councillor briefings, position papers, resolution of contested items."},{"id":"F6","name":"Drafting & statutory assessments","start":"2027-07-01","end":"2027-10-29","lead":"Governance & Legal","detail":"Drafting instructions, legal drafting, Community Impact Statement, Human Rights Charter assessment, competition assessment."},{"id":"F7","name":"Statutory exhibition & submissions","start":"2027-11-01","end":"2028-02-29","lead":"Governance & Legal","detail":"Public notice, exhibition of the proposed local law, receipt and hearing of submissions."},{"id":"F8","name":"Making, gazettal & commencement","start":"2028-03-01","end":"2028-06-30","lead":"Governance & Legal","detail":"Council resolution to make the law, publication in the Government Gazette, public notice, commencement."},{"id":"F9","name":"Transition & implementation","start":"2028-04-03","end":"2028-09-29","lead":"Local Laws & Compliance","detail":"Delegations and authorisations, officer training, permit migration, signage, incorporated document updates, communications."}],"gates":[{"id":"G1","date":"2026-10-26","forum":"Executive Leadership Team","title":"Project plan, governance and resourcing endorsed","phase":"F1","owner":"Project Manager","status":"In progress","test":"Sponsor, steering group, budget and a named drafting resource are all confirmed in writing.","authority":"Internal project governance","confirm":false},{"id":"G2","date":"2026-12-14","forum":"Council","title":"Review commenced — scope and engagement plan endorsed","phase":"F1","owner":"Director Corporate","status":"Not started","test":"Council resolves to commence the review and endorses the engagement approach under the Community Engagement Policy.","authority":"Local Government Act 2020 s.55 (community engagement policy)","confirm":true},{"id":"G3","date":"2027-03-01","forum":"Executive Leadership Team","title":"Clause triage complete, backlog dispositioned","phase":"F1","owner":"Project Manager","status":"Not started","test":"Every clause in the register carries a disposition and an owner; every backlog item is in scope, out of scope or deferred with a reason.","authority":"Internal project governance","confirm":false},{"id":"G4","date":"2027-06-28","forum":"Executive Leadership Team","title":"Consultation findings and pilot evidence accepted","phase":"F3","owner":"Project Manager","status":"Not started","test":"Engagement report published back to participants; each pilot has a written evaluation against its stated measure.","authority":"Internal project governance","confirm":false},{"id":"G5","date":"2027-08-16","forum":"Councillor briefing","title":"Policy positions confirmed","phase":"F5","owner":"Director Corporate","status":"Not started","test":"Councillors have seen an options paper on every contested item and indicated a preferred position.","authority":"Internal project governance","confirm":false},{"id":"G6","date":"2027-09-13","forum":"Council","title":"Drafting instructions and Community Impact Statement approved","phase":"F6","owner":"Manager Governance","status":"Not started","test":"Instructions signed off; Community Impact Statement covers restriction of competition and administrative burden.","authority":"Victorian local law guidelines — community impact statement","confirm":true},{"id":"G7","date":"2027-10-25","forum":"Executive Leadership Team","title":"Draft law and statutory assessments complete","phase":"F6","owner":"Manager Governance","status":"Not started","test":"Draft law, Charter of Human Rights compatibility assessment and competition assessment are complete and legally reviewed.","authority":"Charter of Human Rights and Responsibilities Act 2006","confirm":true},{"id":"G8","date":"2027-11-22","forum":"Council","title":"Resolve to give notice of the proposed local law","phase":"F7","owner":"Director Corporate","status":"Not started","test":"Council resolves to give public notice; notice states purpose and general purport and where a copy may be obtained.","authority":"Local Government Act 2020 Part 3 Div. 2 — process for making a local law","confirm":true},{"id":"G9","date":"2028-02-21","forum":"Council","title":"Submissions considered and submitters heard","phase":"F7","owner":"Manager Governance","status":"Not started","test":"All submissions tabled, submitters who asked to be heard have been heard, and a response to each theme is documented.","authority":"Council's Community Engagement Policy and Governance Rules","confirm":true},{"id":"G10","date":"2028-04-17","forum":"Council","title":"Resolve to make the local law","phase":"F8","owner":"Director Corporate","status":"Not started","test":"Council resolves to make the local law in its final form. This is the immovable decision — everything downstream is administrative.","authority":"Local Government Act 2020 Part 3 Div. 2","confirm":true},{"id":"G11","date":"2028-05-15","forum":"Administrative","title":"Published in the Government Gazette, public notice given, copy to the Minister","phase":"F8","owner":"Manager Governance","status":"Not started","test":"Gazette notice published, public notice given, and a copy provided to the Minister within the statutory period.","authority":"Local Government Act 2020 Part 3 Div. 2 — publication requirements","confirm":true},{"id":"G12","date":"2028-06-19","forum":"Administrative","title":"New law commences — 30 days clear of the sunset","phase":"F8","owner":"Project Manager","status":"Not started","test":"New law in operation, delegations and authorisations remade, officers trained, permits migrated, website and signage updated.","authority":"Local Government Act 2020 Part 3 Div. 2","confirm":true}],"boundaries":[{"date":"2028-07-19","label":"Sunset — General Local Law 2018 (No. 1) ceases to operate","kind":"immovable","note":"Clause 4 of the current law. A ten-year life from commencement on 20 July 2018. There is no power to extend it: if nothing replaces it, every permit trigger, notice power and infringeable offence in the register stops on this date."},{"date":"2028-09-19","label":"Indicative start of the election caretaker period","kind":"hard","note":"Victorian council general elections fall in October 2028. Major decisions are constrained once the election period starts, so there is no usable float past August 2028. Confirm the exact date with Governance when the Victorian Electoral Commission publishes it."}]},"pilots":[{"id":"PL01","title":"Parklet and accessible clear-width pilot — Chapel St north","proposals":["P02","P19"],"owner":"Economic Development","start":"2026-11-02","end":"2027-05-28","status":"Planned","powers":"Permit conditions under cl.126 and the Footpath Trading Policy — no change to the law needed to run it.","hypothesis":"A permanent parklet class with a 1.8m continuous accessible path can be delivered without reducing trader participation.","measure":"Accessible-path compliance audited monthly; trader participation; complaint volume; Disability Advisory Committee assessment at close."},{"id":"PL02","title":"E-scooter parking corrals and footpath clearance","proposals":["P01"],"owner":"Transport & Parking","start":"2027-02-01","end":"2027-06-30","status":"Planned","powers":"Operator agreement plus obstruction powers under cl.127. Tests the drafting before it is written.","hypothesis":"Mandatory corral parking cuts footpath obstruction reports by more than half without displacing trips.","measure":"Obstruction reports per 1,000 trips; corral compliance rate; audit of clear width at 20 fixed points."},{"id":"PL03","title":"Cat containment — voluntary phase and education","proposals":["P09"],"owner":"Local Laws & Compliance","start":"2027-03-01","end":"2027-06-30","status":"Planned","powers":"Education and voluntary registration only. A containment requirement itself needs the new law.","hypothesis":"Voluntary uptake and the shape of the objections tell us whether a curfew or full containment is deliverable.","measure":"Voluntary sign-ups; cat-related requests; wildlife reports; a structured record of objection themes for the drafting file."},{"id":"PL04","title":"Amplified music compliance — Prahran and Windsor late night","proposals":["P07"],"owner":"City Amenity","start":"2027-02-15","end":"2027-05-31","status":"Planned","powers":"Monitoring and voluntary agreements with operators under existing cl.144.","hypothesis":"Speaker placement rules do more work than the 65dB number, and a placement-first standard is easier to enforce.","measure":"Paired measurements at facade and source; complaints per venue; officer time per matter."},{"id":"PL05","title":"Nature strip planting — self-assessment approval","proposals":["P04"],"owner":"Parks & Environment","start":"2026-11-16","end":"2027-04-30","status":"Planned","powers":"Administrative approval pathway under the existing Nature Strip Planting Policy.","hypothesis":"A self-assessment checklist can replace individual approvals without increasing sightline or service-asset incidents.","measure":"Applications processed; non-compliant plantings found on audit; asset-strike incidents; processing time per application."},{"id":"PL06","title":"Extended building hours in exchange for a construction management plan","proposals":["P10"],"owner":"City Works & Assets","start":"2027-01-18","end":"2027-06-30","status":"Planned","powers":"Consent conditions on asset protection permits under cl.115.","hypothesis":"Traded extended hours plus a named community liaison reduce total disruption compared with the current fixed hours.","measure":"Complaints per site per week against matched control sites; number of hour breaches; builder take-up."},{"id":"PL07","title":"Kerbside EV charging and footpath cable covers","proposals":["P14"],"owner":"Transport & Parking","start":"2027-03-15","end":"2027-06-30","status":"Planned","powers":"Trial permit with conditions, treating the cable as a permitted obstruction under cl.127.","hypothesis":"A conditional permit with an approved cable cover is a workable alternative to prohibition for homes without off-street parking.","measure":"Trip-hazard incidents; insurance and liability assessment; participant and passer-by feedback; cost per permit."}],"engagement":[{"id":"E01","phase":"F1","name":"Internal clause-by-clause workshops (11 business units)","iap2":"Involve","audience":"Officers and authorised officers","window":"Oct 2026 – Feb 2027","owner":"Project Manager","status":"In progress","note":"The first pass over the register. Every clause gets an owning unit and a disposition."},{"id":"E02","phase":"F1","name":"Held-over items surgery with unit managers","iap2":"Involve","audience":"Managers holding long-standing requests","window":"Nov 2026","owner":"Project Manager","status":"Planned","note":"Bring the parked items into the open and force a decision: in scope, out of scope, or deferred with a stated reason."},{"id":"E03","phase":"F3","name":"Community issues survey — what is and is not working","iap2":"Consult","audience":"Whole municipality","window":"Feb – Mar 2027","owner":"Community & Wellbeing","status":"Planned","note":"Issues stage, before positions are fixed. Reaching people early is what makes the statutory exhibition defensible later."},{"id":"E04","phase":"F3","name":"Trader and business roundtables","iap2":"Consult","audience":"Chapel St, Glenferrie Rd, High St, Toorak Village","window":"Mar 2027","owner":"Economic Development","status":"Planned","note":"Footpath trading, parklets, signage, filming and street events."},{"id":"E05","phase":"F3","name":"Deliberative panel on the contested items","iap2":"Collaborate","audience":"Randomly selected residents (n=40)","window":"Apr – May 2027","owner":"Community & Wellbeing","status":"Planned","note":"Reserved for the genuinely contested items: cat containment, amplified music hours, alcohol-free areas."},{"id":"E06","phase":"F3","name":"Targeted sessions — Disability Advisory Committee and multicultural groups","iap2":"Involve","audience":"Advisory committees and community groups","window":"Mar – Apr 2027","owner":"Community & Wellbeing","status":"Planned","note":"Accessible footpath width, signage, and how directive powers are experienced."},{"id":"E07","phase":"F3","name":"Rough sleeping and outreach sector session","iap2":"Involve","audience":"Homelessness services, Victoria Police, outreach providers","window":"Apr 2027","owner":"Community & Wellbeing","status":"Planned","note":"Camping clauses and the operating protocol that sits behind them. Feeds the Charter assessment directly."},{"id":"E08","phase":"F3","name":"Youth and sport user groups","iap2":"Consult","audience":"Reserve user groups, clubs, young people","window":"Apr 2027","owner":"Recreation & Leisure","status":"Planned","note":"Reserve restrictions, ball games, skating, drones, personal training."},{"id":"E09","phase":"F5","name":"Close the loop — what we heard and what changed","iap2":"Consult","audience":"All participants","window":"Jul 2027","owner":"Communications","status":"Planned","note":"Published before positions go to Councillors, not after. Participants should see their input in the options paper."},{"id":"E10","phase":"F7","name":"Statutory public notice and exhibition of the proposed local law","iap2":"Consult","audience":"Whole municipality","window":"Nov 2027 – Jan 2028","owner":"Manager Governance","status":"Planned","note":"The formal step. Notice of purpose and general purport, copies available, submission period. Confirm the notice and submission requirements with Governance against the Act and the Governance Rules."},{"id":"E11","phase":"F7","name":"Hearing of submitters","iap2":"Consult","audience":"Submitters who ask to be heard","window":"Feb 2028","owner":"Manager Governance","status":"Planned","note":"Allow for a dedicated committee meeting. Volume is the variable — cat containment could carry this on its own."},{"id":"E12","phase":"F9","name":"Commencement communications and permit-holder transition","iap2":"Inform","audience":"Permit holders, traders, residents","window":"May – Aug 2028","owner":"Communications","status":"Planned","note":"Existing permits under cl.184 run a year from issue, so some will straddle commencement. Transitional arrangements must be drafted, not improvised."}],"risks":[{"id":"R01","title":"The sunset date cannot move","likelihood":2,"consequence":5,"owner":"Director Corporate","status":"Open","treatment":"Plan to commence on 19 June 2028, a clear month early. Track G10 (resolve to make) as the immovable decision — everything after it is administrative. Report float at every steering group.","note":"If the law is not remade by 19 July 2028, every permit trigger, notice power and infringeable offence in the register stops. There is no extension mechanism."},{"id":"R02","title":"Slippage runs into the 2028 election caretaker period","likelihood":2,"consequence":5,"owner":"Project Manager","status":"Open","treatment":"Hold the making decision at April 2028 with August as the last recoverable date. Confirm the caretaker start with Governance once the VEC publishes it.","note":"General elections in October 2028. Major decisions are constrained from roughly late September, so the float after the sunset is illusory."},{"id":"R03","title":"Council meeting cycle compresses the Q1 gates","likelihood":4,"consequence":3,"owner":"Manager Governance","status":"Open","treatment":"Book G2, G9 and G10 into the meeting calendar as soon as it is set, with the report deadline working backwards from the agenda close date.","note":"There is no January meeting, and report deadlines close roughly two weeks before each meeting. Two gates sit either side of that gap."},{"id":"R04","title":"Charter of Human Rights challenge to the camping and directive powers","likelihood":3,"consequence":4,"owner":"Governance & Legal","status":"Open","treatment":"Start the Charter assessment in phase 1 rather than at drafting. Document the outreach-first operating protocol alongside the clause. Brief counsel early on cl.143.","note":"Clauses 143, 120, 149 and 177 are the exposure. Assessment after drafting is too late to change the drafting."},{"id":"R05","title":"Submission volume on cat containment overwhelms the statutory stage","likelihood":4,"consequence":3,"owner":"Community & Wellbeing","status":"Open","treatment":"Do the contested work at the deliberative panel in phase 3, not at exhibition. Resource submission handling for a high-volume scenario and book a dedicated hearing committee.","note":"Neighbouring councils have drawn submissions in the thousands on this single question."},{"id":"R06","title":"The three incorporated documents are not reviewed in step with the law","likelihood":4,"consequence":4,"owner":"Manager Governance","status":"Open","treatment":"Run the Footpath Trading Policy, Keeping of Animals Policy and Procedure and Protocol Manual as named workstreams with their own owners and the same gate dates.","note":"Clause 19 incorporates all three. If they lag, the new law commences pointing at documents written for the old one."},{"id":"R07","title":"Enforcement data is not good enough to carry an evidence case","likelihood":3,"consequence":3,"owner":"Local Laws & Compliance","status":"Open","treatment":"Scope the data extract in phase 2 and find out early what cannot be answered. Where the record is thin, use the pilots to generate the evidence instead.","note":"Request and infringement data is held across several systems and clause-level coding is inconsistent."},{"id":"R08","title":"Drafting resource is not secured in time","likelihood":3,"consequence":4,"owner":"Director Corporate","status":"Open","treatment":"Confirm the drafting resource at G1 and start procurement by March 2027. Drafting cannot start later than July 2027 without eating the exhibition window.","note":"External drafting has procurement lead time, and a specialist local law drafter is a small market."},{"id":"R09","title":"Overlap with state regimes creates an inconsistency argument","likelihood":3,"consequence":3,"owner":"Governance & Legal","status":"Open","treatment":"Legal review of each overlapping clause before drafting instructions. Where the state covers the field, remove rather than restate.","note":"Noise against the Environment Protection Regulations 2021, short-stay against the state levy and owners corporation rules, drones against CASA, e-rideables against the Road Safety Road Rules."},{"id":"R10","title":"Pilots run too late to influence the drafting","likelihood":3,"consequence":4,"owner":"Project Manager","status":"Open","treatment":"Every pilot must close by 30 June 2027 with a written evaluation. A pilot that cannot report by G4 does not start.","note":"Drafting instructions are approved at G6 in September 2027. Evidence that arrives after that is evidence for the next review, not this one."},{"id":"R11","title":"Items parked for years reappear after the scope is locked","likelihood":4,"consequence":2,"owner":"Project Manager","status":"Open","treatment":"Run the held-over surgery at E02 and publish the disposition of every backlog item. After G3, new items go to a register for the next review unless the sponsor takes it to the steering group.","note":"Three items in the backlog have been open since 2019 and 2020. The review is the moment they surface."}],"decisions":[{"id":"D01","date":"2026-09-08","title":"Replace rather than amend the 2018 law","forum":"Project steering group","decision":"The review will produce a new General Local Law rather than a further amendment to the 2018 law.","rationale":"The 2018 law still runs on Local Government Act 1989 definitions, Part 4 is already a hole, and a fourth amendment layer would be unreadable for officers and the public.","status":"Agreed"},{"id":"D02","date":"2026-09-08","title":"Commencement target set at 19 June 2028","forum":"Project steering group","decision":"Plan to a commencement date one month clear of the 19 July 2028 sunset.","rationale":"Preserves a month of recovery time for a gazettal or administrative delay without touching the making decision.","status":"Agreed"},{"id":"D03","date":"2026-09-01","title":"Pilots close by 30 June 2027","forum":"Project steering group","decision":"Every pilot must report by gate G4. Pilots that cannot report by then will not be started.","rationale":"Drafting instructions are approved in September 2027. Evidence after that date cannot change the draft.","status":"Agreed"},{"id":"D04","date":"2026-10-26","title":"Charter of Human Rights assessment starts in phase 1","forum":"Executive Leadership Team","decision":"Bring the Charter compatibility assessment forward to run alongside the clause triage rather than after drafting.","rationale":"An assessment done after drafting cannot influence the drafting. Clauses 143, 120, 149 and 177 need the analysis before the instructions are written.","status":"Proposed"},{"id":"D05","date":"2026-11-16","title":"Treatment of the three incorporated documents","forum":"Executive Leadership Team","decision":"Pending — whether the Footpath Trading and Keeping of Animals policies stay incorporated under cl.19 or move into the law itself.","rationale":"Incorporation keeps the documents amendable without remaking the law, but weakens enforceability and leaves obligations outside the instrument people read.","status":"Open"}]};
+const TODAY = new Date();
+
+/* ---------- helpers ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const day = (s) => new Date(s + "T00:00:00");
+const days = (a, b) => Math.round((day(b) - a) / 86400000);
+const fmt = (s) => day(s).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" });
+const fmtShort = (s) => day(s).toLocaleDateString("en-AU", { day: "numeric", month: "short" });
+const monthYear = (d) => d.toLocaleDateString("en-AU", { month: "short", year: "2-digit" });
+
+const DISPOSITIONS = ["Not started", "Under review", "Retain", "Amend", "Rewrite", "Revoke", "Move to policy"];
+const DISP_COLOUR = { "Not started": "var(--rule-strong)", "Under review": "var(--blue)", Retain: "var(--green)", Amend: "var(--amber)", Rewrite: "var(--teal)", Revoke: "var(--accent)", "Move to policy": "var(--ink-3)" };
+const DISP_PILL = { "Not started": "grey", "Under review": "blue", Retain: "green", Amend: "amber", Rewrite: "teal", Revoke: "red", "Move to policy": "grey" };
+const PROPOSAL_STATUS = ["Parked", "Triage", "In scope", "Out of scope", "Deferred to next review"];
+const PS_PILL = { Parked: "grey", Triage: "blue", "In scope": "green", "Out of scope": "red", "Deferred to next review": "amber" };
+const GATE_STATUS = ["Not started", "In progress", "At risk", "Complete"];
+const GS_PILL = { "Not started": "grey", "In progress": "blue", "At risk": "red", Complete: "green" };
+const RUN_STATUS = ["Planned", "Running", "Reporting", "Complete", "Dropped"];
+const RS_PILL = { Planned: "grey", Running: "blue", Reporting: "amber", Complete: "green", Dropped: "red" };
+const UNITS = [...new Set(D.clauses.map((c) => c.owner))].sort();
+const TAG_LABEL = { P: ["p", "Permit"], N: ["n", "Notice"], I: ["i", "Offence"], D: ["", "Machinery"], X: ["x", "Superseded"] };
+
+/* ---------- state ---------- */
+const overlay = { clauses: {}, proposals: {}, gates: {}, pilots: {}, risks: {}, engagement: {} };
+let dbDoc = null, dbExists = false;
+const filters = { q: "", part: "", disp: "", owner: "", tag: "", pstatus: "", punit: "" };
+let initials = "";
+try { initials = localStorage.getItem("llr-initials") || ""; } catch (e) {}
+
+const ov = (kind, id, field, fallback) => {
+  const o = overlay[kind] && overlay[kind][id];
+  return o && o[field] !== undefined && o[field] !== null ? o[field] : fallback;
+};
+const stamp = (kind, id, patch) => {
+  const body = Object.assign({}, patch, { at: new Date().toISOString().slice(0, 10) });
+  if (initials) body.by = initials.toUpperCase();
+  overlay[kind][id] = Object.assign({}, overlay[kind][id], body);
+  write(kind, id, body);
+  return body;
+};
+const editedNote = (kind, id) => {
+  const o = overlay[kind][id];
+  if (!o || !o.at) return "";
+  return `<span class="meta">Changed ${esc(fmtShort(o.at))}${o.by ? " · " + esc(o.by) : ""}</span>`;
+};
+
+/* ---------- persistence ---------- */
+async function write(kind, id, body) {
+  if (!dbDoc) return;
+  const patch = { [kind]: { [id]: body } };
+  try {
+    if (dbExists) await dbDoc.update(patch);
+    else { await dbDoc.set(patch); dbExists = true; }
+  } catch (e) {
+    if (e && e.code === "invalid_argument" && !dbExists) {
+      try { await dbDoc.set(patch); dbExists = true; return; } catch (e2) {}
+    }
+    setDbStatus("local", "Change not saved — working locally");
+  }
+}
+function setDbStatus(kind, text) {
+  const dot = $("#dbdot"), t = $("#dbtext");
+  if (!dot) return;
+  dot.className = "dot" + (kind ? " " + kind : "");
+  t.textContent = text;
+}
+(async function connect() {
+  const db = window.claude && (await window.claude.use("db"));
+  if (!db) { setDbStatus("local", "Working copy — changes stay in this browser"); return; }
+  dbDoc = db.doc("program/state");
+  dbDoc.onSnapshot(
+    (snap) => {
+      dbExists = snap.exists;
+      const data = snap.data() || {};
+      for (const k of Object.keys(overlay)) overlay[k] = data[k] || {};
+      setDbStatus("live", "Shared with the project team");
+      render();
+    },
+    () => setDbStatus("local", "Shared copy unavailable — working locally"),
+  );
+})();
+
+/* ---------- derived program facts ---------- */
+const LAW = D.program.law;
+const GATES = D.program.gates.map((g) => Object.assign({}, g));
+const gateStatus = (g) => ov("gates", g.id, "status", g.status);
+const gateDate = (g) => ov("gates", g.id, "date", g.date);
+const daysToSunset = days(TODAY, LAW.sunset);
+const decisionGate = GATES.find((g) => g.id === "G10");
+const commence = GATES.find((g) => g.id === "G12");
+const floatWeeks = Math.round(days(day(gateDate(commence)), LAW.sunset) / 7);
+const nextGate = () => GATES.filter((g) => gateStatus(g) !== "Complete").sort((a, b) => gateDate(a).localeCompare(gateDate(b)))[0];
+
+const dispOf = (c) => ov("clauses", c.id, "disposition", c.disposition);
+const ownerOf = (c) => ov("clauses", c.id, "owner", c.owner);
+const pstatusOf = (p) => ov("proposals", p.id, "status", p.status);
+const clauseTally = () => {
+  const t = {};
+  for (const d of DISPOSITIONS) t[d] = 0;
+  for (const c of D.clauses) t[dispOf(c)] = (t[dispOf(c)] || 0) + 1;
+  return t;
+};
+
+/* ---------- topbar ---------- */
+function renderTop() {
+  const g = nextGate();
+  const done = D.clauses.filter((c) => dispOf(c) !== "Not started").length;
+  $("#topbar").innerHTML = `
+    <div class="tb alert"><span class="k">Sunset</span><span class="v count">${daysToSunset} days</span></div>
+    <div class="tb"><span class="k">Next gate</span><span class="v">${esc(g ? g.id + " · " + fmtShort(gateDate(g)) : "All gates closed")}</span></div>
+    <div class="tb"><span class="k">Clauses triaged</span><span class="v count">${done}/${D.clauses.length}</span></div>
+    <div class="tb"><span class="k">In scope</span><span class="v count">${D.proposals.filter((p) => pstatusOf(p) === "In scope").length} of ${D.proposals.length} proposals</span></div>`;
+}
+
+/* ---------- view: program ---------- */
+function viewProgram() {
+  const t = clauseTally();
+  const totalC = D.clauses.length;
+  const bars = DISPOSITIONS.filter((d) => t[d]).map((d) => `<i style="width:${(t[d] / totalC) * 100}%;background:${DISP_COLOUR[d]}"></i>`).join("");
+  const key = DISPOSITIONS.filter((d) => t[d]).map((d) => `<span><i style="background:${DISP_COLOUR[d]}"></i>${esc(d)} <b>${t[d]}</b></span>`).join("");
+
+  const horizon = GATES.filter((g) => days(TODAY, gateDate(g)) <= 180 && gateStatus(g) !== "Complete")
+    .sort((a, b) => gateDate(a).localeCompare(gateDate(b)));
+  const soon = horizon.map((g) => {
+    const d = days(TODAY, gateDate(g));
+    return `<div class="item"><div class="top"><span class="ti">${esc(g.id)} · ${esc(g.title)}</span><span class="date">${esc(fmtShort(gateDate(g)))}</span></div>
+      <div class="sub">${esc(g.forum)} · ${esc(ov("gates", g.id, "owner", g.owner))} · <span class="pill ${GS_PILL[gateStatus(g)]}">${esc(gateStatus(g))}</span> · ${d < 0 ? "overdue by " + -d : "in " + d} days</div></div>`;
+  }).join("") || `<div class="item"><div class="sub">Nothing falls due in the next six months.</div></div>`;
+
+  const topRisks = D.risks
+    .map((r) => ({ r, s: ov("risks", r.id, "likelihood", r.likelihood) * ov("risks", r.id, "consequence", r.consequence) }))
+    .sort((a, b) => b.s - a.s).slice(0, 5)
+    .map(({ r, s }) => `<div class="item"><div class="top"><span class="ti">${esc(r.title)}</span><span class="date">${s}</span></div>
+      <div class="sub">${esc(r.id)} · ${esc(ov("risks", r.id, "owner", r.owner))} · <span class="pill ${s >= 15 ? "red" : s >= 9 ? "amber" : "grey"}">${s >= 15 ? "Severe" : s >= 9 ? "High" : "Moderate"}</span></div></div>`).join("");
+
+  const livePilots = D.pilots.filter((p) => ov("pilots", p.id, "status", p.status) !== "Dropped").length;
+  const g4 = GATES.find((g) => g.id === "G4");
+
+  return `
+  <div class="vh">
+    <div class="eyebrow">01 — Program</div>
+    <h2>Everything works backwards from one date</h2>
+    <p>Clause 4 of the current law ends it on 19 July 2028, ten years after it commenced. There is no power to extend that date, so the whole program is a backward plan from a fixed wall.</p>
+  </div>
+
+  <div class="seal">
+    <div><div class="k">Days to sunset</div><div class="big hot">${daysToSunset}</div><div class="cap">${esc(fmt(LAW.sunset))} — cl.&nbsp;4 of the 2018 law</div></div>
+    <div><div class="k">To the making decision</div><div class="big">${days(TODAY, gateDate(decisionGate))}</div><div class="cap">${esc(decisionGate.id)} at Council, ${esc(fmt(gateDate(decisionGate)))}. The last immovable decision.</div></div>
+    <div><div class="k">Float at commencement</div><div class="big">${floatWeeks}<span style="font-size:18px"> wks</span></div><div class="cap">Between the planned commencement and the sunset. This is the whole safety margin.</div></div>
+    <div><div class="k">Clauses to triage</div><div class="big">${totalC - D.clauses.filter((c) => dispOf(c) !== "Not started").length}</div><div class="cap">Of ${totalC} operative clauses still without a disposition.</div></div>
+    <div><div class="k">Pilots committed</div><div class="big">${livePilots}</div><div class="cap">Every one reports by G4, ${esc(fmt(gateDate(g4)))}. A pilot that cannot report by then does not start.</div></div>
+  </div>
+
+  <h3 class="sec">Phases and gates <span class="tally">Sep 2026 – Oct 2028</span></h3>
+  ${gantt()}
+
+  <div class="grid2" style="margin-top:26px">
+    <div class="panel"><h4>Falling due in the next six months</h4><p class="lede">Gates in date order, with the forum that has to sign them off.</p><div class="stack">${soon}</div></div>
+    <div class="panel"><h4>Risks carrying the most exposure</h4><p class="lede">Likelihood &times; consequence, scored out of 25.</p><div class="stack">${topRisks}</div></div>
+  </div>
+
+  <h3 class="sec">Where the clause register stands <span class="tally">${totalC} operative clauses</span></h3>
+  <div class="tallybar">${bars}</div>
+  <div class="tallykey">${key}</div>
+
+  <div class="caveat"><b>Statutory steps still to be confirmed.</b> The gates marked with a flag carry a provisional reference to the Local Government Act 2020 and Council's Governance Rules. Governance and Legal should confirm the exact notice period, submission process and publication requirements before G2 is written up — the dates here assume a conventional exhibition and hearing cycle, not a verified pin-cite.</div>`;
+}
+
+function gantt() {
+  const t0 = day("2026-09-01"), t1 = day("2028-10-01");
+  const span = t1 - t0;
+  const pos = (d) => ((day(d) - t0) / span) * 100;
+  const nowPos = ((TODAY - t0) / span) * 100;
+
+  let ticks = "";
+  for (let y = 2026; y <= 2028; y++)
+    for (let m = 0; m < 12; m += 3) {
+      const d = new Date(y, m, 1);
+      if (d < t0 || d > t1) continue;
+      ticks += `<span style="left:${((d - t0) / span) * 100}%">${monthYear(d)}</span>`;
+    }
+
+  const bounds = D.program.boundaries
+    .map((b) => `<div class="vline hard" style="left:${pos(b.date)}%;opacity:${b.kind === "immovable" ? .9 : .45}" title="${esc(b.label)}"></div>`)
+    .join("");
+
+  const rows = D.program.phases.map((p) => {
+    const live = day(p.start) <= TODAY && TODAY <= day(p.end);
+    return `<div class="gantt-row"><div class="lab"><b>${esc(p.name)}</b>${esc(p.lead)}</div>
+      <div class="track">
+        <div class="bar${live ? " now" : ""}" style="left:${pos(p.start)}%;width:${pos(p.end) - pos(p.start)}%" title="${esc(p.name)}: ${esc(fmt(p.start))} – ${esc(fmt(p.end))}"></div>
+        ${bounds}
+        <div class="vline now" style="left:${nowPos}%"></div>
+      </div></div>`;
+  }).join("");
+
+  const marks = GATES.map((g) => {
+    const s = gateStatus(g);
+    const cls = s === "Complete" ? "done" : s === "In progress" || s === "At risk" ? "active" : "";
+    return `<button class="mark ${cls}" style="left:${pos(gateDate(g))}%" data-gate="${esc(g.id)}" title="${esc(g.title)} — ${esc(fmt(gateDate(g)))}" aria-label="${esc(g.id)}: ${esc(g.title)}"><i></i><b>${esc(g.id)}</b></button>`;
+  }).join("");
+
+  return `<div class="gantt"><div class="gantt-in">
+    <div class="axis">${ticks}</div>
+    ${rows}
+    <div class="gantt-row"><div class="lab"><b>Hard dates</b>no float past these</div>
+      <div class="track hardrow">${bounds}
+      ${D.program.boundaries.map((b) => `<span class="hardlab" style="left:${pos(b.date)}%">${b.kind === "immovable" ? "SUNSET" : "CARETAKER"}</span>`).join("")}</div></div>
+    <div class="gantt-marks">${marks}</div>
+  </div>
+  <div class="legend">
+    <span><i style="background:var(--accent)"></i>Running now</span>
+    <span><i style="background:var(--teal);opacity:.82"></i>Phase</span>
+    <span><i style="background:var(--green);transform:rotate(45deg);width:8px;height:8px"></i>Gate closed</span>
+    <span><i style="background:transparent;border-left:1px dashed var(--accent);border-radius:0;width:1px"></i>Dates that cannot move</span>
+    <span style="color:var(--ink-2)">Select a gate marker for what has to be true before it closes.</span>
+  </div></div>`;
+}
+
+/* ---------- view: clauses ---------- */
+function viewClauses() {
+  const t = clauseTally();
+  const parts = [...new Set(D.clauses.map((c) => c.part))];
+  const rows = [];
+  let lastPart = null;
+
+  const list = D.clauses.filter((c) => {
+    const q = filters.q.toLowerCase();
+    if (q && !(c.title.toLowerCase().includes(q) || c.id.includes(q) || c.partTitle.toLowerCase().includes(q))) return false;
+    if (filters.part && String(c.part) !== filters.part) return false;
+    if (filters.disp && dispOf(c) !== filters.disp) return false;
+    if (filters.owner && ownerOf(c) !== filters.owner) return false;
+    if (filters.tag && !c.tags.includes(filters.tag)) return false;
+    return true;
+  });
+
+  for (const c of list) {
+    if (c.part !== lastPart) {
+      if (lastPart === 3 && c.part === 5)
+        rows.push(`<tr class="gaprow"><td colspan="6">Part 4 — Council administration. Repealed in 2023 and moved to the Governance Rules; clause numbering jumps from 24 to 104.</td></tr>`);
+      rows.push(`<tr class="gaprow"><td colspan="6">Part ${c.part} — ${esc(c.partTitle)}</td></tr>`);
+      lastPart = c.part;
+    }
+    const d = dispOf(c), o = ownerOf(c);
+    rows.push(`<tr>
+      <td class="num">cl.&nbsp;${esc(c.id)}</td>
+      <td><div class="ti">${esc(c.title)}</div>
+        <div class="meta">${c.tags.map((g) => `<span class="chip ${TAG_LABEL[g][0]}">${esc(TAG_LABEL[g][1])}</span>`).join("")}
+        ${c.proposals.map((p) => `<button class="chip link" data-proposal="${esc(p)}">${esc(p)}</button>`).join("")}</div></td>
+      <td><select class="sel-dis" data-clause="${esc(c.id)}" data-field="disposition" aria-label="Disposition for clause ${esc(c.id)}">${DISPOSITIONS.map((x) => `<option${x === d ? " selected" : ""}>${esc(x)}</option>`).join("")}</select></td>
+      <td><select class="sel-own" data-clause="${esc(c.id)}" data-field="owner" aria-label="Owner for clause ${esc(c.id)}">${UNITS.map((x) => `<option${x === o ? " selected" : ""}>${esc(x)}</option>`).join("")}</select></td>
+      <td style="min-width:190px"><textarea data-clause="${esc(c.id)}" data-field="note" rows="1" placeholder="Review note…" aria-label="Note for clause ${esc(c.id)}">${esc(ov("clauses", c.id, "note", ""))}</textarea>${editedNote("clauses", c.id)}</td>
+    </tr>`);
+  }
+
+  const bars = DISPOSITIONS.filter((d) => t[d]).map((d) => `<i style="width:${(t[d] / D.clauses.length) * 100}%;background:${DISP_COLOUR[d]}"></i>`).join("");
+  const key = DISPOSITIONS.filter((d) => t[d]).map((d) => `<span><i style="background:${DISP_COLOUR[d]}"></i>${esc(d)} <b>${t[d]}</b></span>`).join("");
+
+  return `
+  <div class="vh">
+    <div class="eyebrow">02 — Clause register</div>
+    <h2>Every operative clause, with a decision against it</h2>
+    <p>The complete register of General Local Law 2018 (No.&nbsp;1) as amended in 2023. Gate G3 is met when no clause is left at “Not started”. Changes save for the whole project team.</p>
+  </div>
+  <div class="tallybar">${bars}</div>
+  <div class="tallykey">${key}</div>
+  <div class="filters">
+    <input type="search" id="f-q" placeholder="Search clause number, title or part…" value="${esc(filters.q)}" aria-label="Search clauses">
+    <label for="f-part">Part</label>
+    <select id="f-part"><option value="">All</option>${parts.map((p) => `<option value="${p}"${filters.part == p ? " selected" : ""}>Part ${p}</option>`).join("")}</select>
+    <label for="f-disp">Disposition</label>
+    <select id="f-disp"><option value="">All</option>${DISPOSITIONS.map((x) => `<option${filters.disp === x ? " selected" : ""}>${esc(x)}</option>`).join("")}</select>
+    <label for="f-owner">Owner</label>
+    <select id="f-owner"><option value="">All</option>${UNITS.map((x) => `<option${filters.owner === x ? " selected" : ""}>${esc(x)}</option>`).join("")}</select>
+    <label for="f-tag">Type</label>
+    <select id="f-tag"><option value="">All</option>${Object.entries(TAG_LABEL).map(([k, v]) => `<option value="${k}"${filters.tag === k ? " selected" : ""}>${esc(v[1])}</option>`).join("")}</select>
+    <button class="clearbtn" id="f-clear" type="button">Clear</button>
+    <span class="meta" style="margin-left:auto;color:var(--ink-3);font-family:var(--mono);font-size:11px">${list.length} shown</span>
+  </div>
+  <div class="tablewrap"><table class="ledger">
+    <thead><tr><th>Clause</th><th>Title &amp; type</th><th>Disposition</th><th>Owning unit</th><th>Review note</th></tr></thead>
+    <tbody>${rows.join("")}</tbody>
+  </table></div>
+  <p class="note">Type markers come from the law itself: <b>Permit</b> is a clause that creates a permit trigger, <b>Notice</b> a notice-to-comply or directive power, <b>Offence</b> conduct that can be infringed, <b>Superseded</b> a clause that already points at the Local Government Act 1989 or at Part 4, repealed in 2023.</p>`;
+}
+
+/* ---------- view: proposals ---------- */
+function viewProposals() {
+  const list = D.proposals.filter((p) => {
+    if (filters.pstatus && pstatusOf(p) !== filters.pstatus) return false;
+    if (filters.punit && p.unit !== filters.punit) return false;
+    return true;
+  });
+  const units = [...new Set(D.proposals.map((p) => p.unit))].sort();
+
+  const cells = {};
+  for (const p of D.proposals) {
+    const k = p.impact + ":" + p.effort;
+    (cells[k] = cells[k] || []).push(p);
+  }
+  let grid = "";
+  for (let i = 5; i >= 1; i--) {
+    grid += i === 5 ? `<div class="ylab">Impact →</div>` : "";
+    for (let e = 1; e <= 5; e++) {
+      const here = cells[i + ":" + e] || [];
+      const lvl = i >= 4 && e <= 2 ? "l1" : i >= 4 ? "l3" : i >= 3 ? "l2" : "l2";
+      grid += `<div class="cell ${lvl}">${here.map((p) => `<button class="tok" data-proposal="${esc(p.id)}" title="${esc(p.title)}">${esc(p.id)}</button>`).join("")}</div>`;
+    }
+  }
+  grid += `<div></div>` + [1, 2, 3, 4, 5].map((e) => `<div class="xlab">${e}</div>`).join("");
+
+  const rows = list.sort((a, b) => b.impact * 2 - b.effort - (a.impact * 2 - a.effort)).map((p) => {
+    const s = pstatusOf(p);
+    return `<tr>
+      <td class="num">${esc(p.id)}</td>
+      <td><div class="ti"><button class="tok" style="border:0;background:none;padding:0;font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer" data-proposal="${esc(p.id)}">${esc(p.title)}</button></div>
+        <div class="meta">${p.clauses.map((c) => `<span class="chip">cl. ${esc(c)}</span>`).join("")} · Raised ${esc(p.raised)} · ${esc(p.source)}</div></td>
+      <td>${esc(p.unit)}</td>
+      <td class="num">${p.impact} / ${p.effort}</td>
+      <td><span class="pill ${p.sensitivity === "Critical" ? "red" : p.sensitivity === "High" ? "amber" : "grey"}">${esc(p.sensitivity)}</span></td>
+      <td><select data-proposal-field="${esc(p.id)}" aria-label="Status for ${esc(p.id)}">${PROPOSAL_STATUS.map((x) => `<option${x === s ? " selected" : ""}>${esc(x)}</option>`).join("")}</select>${editedNote("proposals", p.id)}</td>
+    </tr>`;
+  }).join("");
+
+  const aged = D.proposals.filter((p) => p.raised < "2021").length;
+
+  return `
+  <div class="vh">
+    <div class="eyebrow">03 — Proposals</div>
+    <h2>The backlog, in the open</h2>
+    <p>Every change that has been asked for, including the ones that have been sitting with a manager since 2019. Nothing leaves this list without a disposition — in scope, out of scope, or deferred with a stated reason. ${aged} of the ${D.proposals.length} items have been open since 2020 or earlier.</p>
+  </div>
+  <div class="grid2" style="align-items:start">
+    <div class="matrix">
+      <h4 style="font-family:var(--serif);font-size:14.5px;margin-bottom:3px">Impact against effort</h4>
+      <p class="lede" style="font-size:12px;color:var(--ink-3);margin:0 0 14px">High impact, low effort sits top left. Select an item for the full note.</p>
+      <div class="mx">${grid}</div>
+      <div class="mxfoot"><span>Effort, 1 (least) to 5 (most)</span></div>
+    </div>
+    <div class="panel">
+      <h4>How to read this</h4>
+      <p class="lede">Position is the argument for sequencing, not the decision.</p>
+      <div class="stack">
+        <div class="item"><div class="ti">Top-left items belong in the first drafting tranche</div><div class="sub">High impact, low effort. P20 (repeal spent machinery clauses) and P04 (nature strip planting) can be settled without consultation load.</div></div>
+        <div class="item"><div class="ti">High impact, high effort items need the pilots</div><div class="sub">P01, P07, P09 and P14 all carry an operational unknown. Each has a pilot attached so the drafting rests on evidence rather than argument.</div></div>
+        <div class="item"><div class="ti">Critical sensitivity is a consultation signal, not a stop</div><div class="sub">P08 (camping) and P09 (cat containment) will generate the submission volume. Plan the hearing capacity for these two alone.</div></div>
+        <div class="item"><div class="ti">Parked items still need a decision</div><div class="sub">Three items have sat since 2019–2020. Leaving them parked through the review means carrying them for another ten years.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="filters" style="margin-top:22px">
+    <label for="f-ps">Status</label>
+    <select id="f-ps"><option value="">All</option>${PROPOSAL_STATUS.map((x) => `<option${filters.pstatus === x ? " selected" : ""}>${esc(x)}</option>`).join("")}</select>
+    <label for="f-pu">Unit</label>
+    <select id="f-pu"><option value="">All</option>${units.map((x) => `<option${filters.punit === x ? " selected" : ""}>${esc(x)}</option>`).join("")}</select>
+    <button class="clearbtn" id="f-pclear" type="button">Clear</button>
+    <span style="margin-left:auto;color:var(--ink-3);font-family:var(--mono);font-size:11px">${list.length} shown</span>
+  </div>
+  <div class="tablewrap"><table class="ledger">
+    <thead><tr><th>Ref</th><th>Proposal</th><th>Sponsor</th><th>Impact / effort</th><th>Sensitivity</th><th>Disposition</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
+
+/* ---------- view: engagement ---------- */
+function viewEngagement() {
+  const phases = Object.fromEntries(D.program.phases.map((p) => [p.id, p.name]));
+  const IAP2 = { Inform: "grey", Consult: "blue", Involve: "teal", Collaborate: "green", Empower: "amber" };
+  const rows = D.engagement.map((e) => {
+    const s = ov("engagement", e.id, "status", e.status);
+    return `<tr>
+      <td class="num">${esc(e.id)}</td>
+      <td><div class="ti">${esc(e.name)}</div><div class="meta">${esc(e.note)}</div></td>
+      <td><span class="pill ${IAP2[e.iap2] || "grey"}">${esc(e.iap2)}</span></td>
+      <td>${esc(e.audience)}</td>
+      <td class="num">${esc(e.window)}</td>
+      <td>${esc(e.owner)}</td>
+      <td><select data-eng="${esc(e.id)}" aria-label="Status for ${esc(e.id)}">${RUN_STATUS.map((x) => `<option${x === s ? " selected" : ""}>${esc(x)}</option>`).join("")}</select>${editedNote("engagement", e.id)}</td>
+    </tr>`;
+  }).join("");
+
+  return `
+  <div class="vh">
+    <div class="eyebrow">04 — Engagement</div>
+    <h2>Consult before the positions harden, not after</h2>
+    <p>The statutory exhibition at phase 7 is the formal step, but it is a poor place to discover an objection. The issues-stage work in phase 3 is what makes the formal stage survivable — and what the Community Engagement Policy expects.</p>
+  </div>
+  <div class="caveat"><b>Check this against the Act before G2.</b> The exhibition and submission arrangements at E10 and E11 are planned on a conventional cycle: public notice stating the purpose and general purport of the proposed law, copies available, a submission period, and a hearing for those who ask to be heard. Governance and Legal should confirm the current requirements under the Local Government Act 2020 and Council's Governance Rules, and the dates in the program should be re-cut if the notice period differs.</div>
+  <div class="tablewrap"><table class="ledger">
+    <thead><tr><th>Ref</th><th>Activity</th><th>IAP2</th><th>Who</th><th>When</th><th>Lead</th><th>Status</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>
+  <p class="note">IAP2 levels set the promise made to participants. <b>Consult</b> promises to listen and report back; <b>Involve</b> promises that concerns will be reflected; <b>Collaborate</b> promises the advice will shape the recommendation. Do not promise a level the gate dates cannot honour.</p>`;
+}
+
+/* ---------- view: pilots ---------- */
+function viewPilots() {
+  const t0 = day("2026-09-01"), t1 = day("2027-09-01"), span = t1 - t0;
+  const pos = (d) => Math.max(0, Math.min(100, ((day(d) - t0) / span) * 100));
+  const cards = D.pilots.map((p) => {
+    const s = ov("pilots", p.id, "status", p.status);
+    return `<div class="card">
+      <div class="hd"><span class="id">${esc(p.id)}</span><span class="pill ${RS_PILL[s]}">${esc(s)}</span></div>
+      <h4>${esc(p.title)}</h4>
+      <div class="track" style="height:8px"><div class="bar" style="left:${pos(p.start)}%;width:${pos(p.end) - pos(p.start)}%;top:0;height:8px"></div></div>
+      <div class="kv"><b>${esc(fmtShort(p.start))} – ${esc(fmt(p.end))}</b></div>
+      <p class="test">${esc(p.hypothesis)}</p>
+      <div class="kv"><b>Measured by</b></div><p style="font-size:12px;margin-top:-4px">${esc(p.measure)}</p>
+      <div class="kv"><b>Runs under</b></div><p style="font-size:12px;margin-top:-4px">${esc(p.powers)}</p>
+      <div class="foot">
+        <span class="kv"><b>${esc(p.owner)}</b></span>
+        ${p.proposals.map((x) => `<button class="chip link" data-proposal="${esc(x)}">${esc(x)}</button>`).join("")}
+        <select data-pilot="${esc(p.id)}" style="margin-left:auto" aria-label="Status for ${esc(p.id)}">${RUN_STATUS.map((x) => `<option${x === s ? " selected" : ""}>${esc(x)}</option>`).join("")}</select>
+      </div>${editedNote("pilots", p.id)}
+    </div>`;
+  }).join("");
+
+  return `
+  <div class="vh">
+    <div class="eyebrow">05 — Pilots</div>
+    <h2>Test it while you can still change the drafting</h2>
+    <p>Each pilot runs under powers Council already has — permit conditions, operator agreements, policy — so none of them waits on the new law. All seven must report by G4 on 28 June 2027, because drafting instructions are approved in September 2027 and evidence after that date changes nothing.</p>
+  </div>
+  <div class="cards">${cards}</div>
+  <p class="note">A pilot without a stated measure is a trial balloon. Every card above names what will be counted and against what, so the evaluation at G4 is an assessment rather than an argument.</p>`;
+}
+
+/* ---------- view: risks ---------- */
+function viewRisks() {
+  const cells = {};
+  for (const r of D.risks) {
+    const l = ov("risks", r.id, "likelihood", r.likelihood), c = ov("risks", r.id, "consequence", r.consequence);
+    (cells[l + ":" + c] = cells[l + ":" + c] || []).push(r);
+  }
+  let grid = "";
+  for (let c = 5; c >= 1; c--) {
+    grid += c === 5 ? `<div class="ylab">Consequence →</div>` : "";
+    for (let l = 1; l <= 5; l++) {
+      const s = l * c;
+      const lvl = s >= 15 ? "l4" : s >= 9 ? "l3" : s >= 4 ? "l2" : "l1";
+      grid += `<div class="cell ${lvl}">${(cells[l + ":" + c] || []).map((r) => `<button class="tok" data-risk="${esc(r.id)}" title="${esc(r.title)}">${esc(r.id)}</button>`).join("")}</div>`;
+    }
+  }
+  grid += `<div></div>` + [1, 2, 3, 4, 5].map((l) => `<div class="xlab">${l}</div>`).join("");
+
+  const rrows = D.risks.map((r) => {
+    const l = ov("risks", r.id, "likelihood", r.likelihood), c = ov("risks", r.id, "consequence", r.consequence), s = l * c;
+    const st = ov("risks", r.id, "status", r.status);
+    return `<tr>
+      <td class="num">${esc(r.id)}</td>
+      <td><div class="ti"><button class="tok" style="border:0;background:none;padding:0;font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer" data-risk="${esc(r.id)}">${esc(r.title)}</button></div><div class="meta">${esc(r.note)}</div></td>
+      <td class="num">${l} &times; ${c} = <b>${s}</b></td>
+      <td><span class="pill ${s >= 15 ? "red" : s >= 9 ? "amber" : "grey"}">${s >= 15 ? "Severe" : s >= 9 ? "High" : "Moderate"}</span></td>
+      <td>${esc(ov("risks", r.id, "owner", r.owner))}</td>
+      <td><select data-riskstatus="${esc(r.id)}" aria-label="Status for ${esc(r.id)}">${["Open", "Monitoring", "Treated", "Closed"].map((x) => `<option${x === st ? " selected" : ""}>${esc(x)}</option>`).join("")}</select>${editedNote("risks", r.id)}</td>
+    </tr>`;
+  }).join("");
+
+  const drows = D.decisions.map((d) => `<tr>
+      <td class="num">${esc(d.id)}</td>
+      <td class="num">${esc(fmtShort(d.date))}</td>
+      <td><div class="ti">${esc(d.title)}</div><div class="meta">${esc(d.decision)}</div></td>
+      <td style="max-width:290px"><div class="meta" style="margin:0">${esc(d.rationale)}</div></td>
+      <td>${esc(d.forum)}</td>
+      <td><span class="pill ${d.status === "Agreed" ? "green" : d.status === "Proposed" ? "blue" : "amber"}">${esc(d.status)}</span></td>
+    </tr>`).join("");
+
+  return `
+  <div class="vh">
+    <div class="eyebrow">06 — Risks &amp; decisions</div>
+    <h2>What could take the date away, and what has already been settled</h2>
+    <p>Two risks carry a consequence of 5: missing the sunset, and slipping into the 2028 election caretaker period. Everything else is recoverable. The decision log below is what stops settled questions being reopened at the last briefing.</p>
+  </div>
+  <div class="grid2" style="align-items:start">
+    <div class="matrix">
+      <h4 style="font-family:var(--serif);font-size:14.5px;margin-bottom:3px">Risk position</h4>
+      <p class="lede" style="font-size:12px;color:var(--ink-3);margin:0 0 14px">Likelihood across, consequence up. Select a marker for the treatment.</p>
+      <div class="mx">${grid}</div>
+      <div class="mxfoot"><span>Likelihood, 1 (rare) to 5 (near certain)</span></div>
+    </div>
+    <div class="panel">
+      <h4>Decision log</h4>
+      <p class="lede">Five decisions recorded. D05 is still open.</p>
+      <div class="stack">${D.decisions.map((d) => `<div class="item"><div class="top"><span class="ti">${esc(d.title)}</span><span class="date">${esc(fmtShort(d.date))}</span></div><div class="sub">${esc(d.decision)}</div></div>`).join("")}</div>
+    </div>
+  </div>
+  <h3 class="sec">Risk register <span class="tally">${D.risks.length} open</span></h3>
+  <div class="tablewrap"><table class="ledger">
+    <thead><tr><th>Ref</th><th>Risk</th><th>Score</th><th>Rating</th><th>Owner</th><th>Status</th></tr></thead>
+    <tbody>${rrows}</tbody></table></div>
+  <h3 class="sec">Decisions</h3>
+  <div class="tablewrap"><table class="ledger">
+    <thead><tr><th>Ref</th><th>Date</th><th>Decision</th><th>Why</th><th>Forum</th><th>Status</th></tr></thead>
+    <tbody>${drows}</tbody></table></div>`;
+}
+
+/* ---------- drawer ---------- */
+function openDrawer(html) {
+  $("#drawer-body").innerHTML = html;
+  $("#drawer").setAttribute("open", "");
+  $("#drawer .close").focus();
+}
+function closeDrawer() { $("#drawer").removeAttribute("open"); }
+
+function drawerProposal(id) {
+  const p = D.proposals.find((x) => x.id === id);
+  if (!p) return;
+  const pilot = p.pilot ? D.pilots.find((x) => x.id === p.pilot) : null;
+  openDrawer(`
+    <div class="crest" style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">Proposal ${esc(p.id)}</div>
+    <h3 id="drawer-title">${esc(p.title)}</h3>
+    <div style="margin:10px 0"><span class="pill ${PS_PILL[pstatusOf(p)]}">${esc(pstatusOf(p))}</span>
+      <span class="pill ${p.sensitivity === "Critical" ? "red" : p.sensitivity === "High" ? "amber" : "grey"}">${esc(p.sensitivity)} sensitivity</span></div>
+    <div class="drow"><div class="k">The issue</div>${esc(p.note)}</div>
+    <div class="drow"><div class="k">Clauses engaged</div>${p.clauses.map((c) => {
+      const cl = D.clauses.find((x) => x.id === c);
+      return cl ? `cl.&nbsp;${esc(c)} — ${esc(cl.title)}` : "cl. " + esc(c);
+    }).join("<br>")}</div>
+    <div class="drow"><div class="k">Raised</div>${esc(p.raised)} · ${esc(p.source)}</div>
+    <div class="drow"><div class="k">Sponsor</div>${esc(p.unit)}</div>
+    <div class="drow"><div class="k">Impact / effort</div>${p.impact} / ${p.effort}</div>
+    ${pilot ? `<div class="drow"><div class="k">Evidence from</div><b>${esc(pilot.id)}</b> — ${esc(pilot.title)}<br><span style="color:var(--ink-3)">${esc(pilot.measure)}</span></div>` : `<div class="drow"><div class="k">Evidence</div>No pilot attached. Evidence comes from the enforcement data review in phase 2.</div>`}
+    <div class="drow"><div class="k">Project note</div>
+      <textarea data-proposal-note="${esc(p.id)}" rows="4" placeholder="Working note for the drafting file…">${esc(ov("proposals", p.id, "note", ""))}</textarea>
+      ${editedNote("proposals", p.id)}</div>`);
+}
+
+function drawerGate(id) {
+  const g = GATES.find((x) => x.id === id);
+  if (!g) return;
+  const phase = D.program.phases.find((p) => p.id === g.phase);
+  openDrawer(`
+    <div style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">Gate ${esc(g.id)}</div>
+    <h3 id="drawer-title">${esc(g.title)}</h3>
+    <div style="margin:10px 0"><span class="pill ${GS_PILL[gateStatus(g)]}">${esc(gateStatus(g))}</span>
+      <span class="pill grey">${esc(fmt(gateDate(g)))}</span></div>
+    <div class="drow"><div class="k">What must be true</div>${esc(g.test)}</div>
+    <div class="drow"><div class="k">Decided by</div>${esc(g.forum)} · owner ${esc(ov("gates", g.id, "owner", g.owner))}</div>
+    <div class="drow"><div class="k">Phase</div>${esc(phase ? phase.name : g.phase)}${phase ? " — " + esc(phase.detail) : ""}</div>
+    <div class="drow"><div class="k">Authority</div>${esc(g.authority)}${g.confirm ? ` <span class="chip n">Confirm with Governance</span>` : ""}</div>
+    <div class="drow"><div class="k">Status</div>
+      <select data-gate-status="${esc(g.id)}" aria-label="Status for ${esc(g.id)}">${GATE_STATUS.map((x) => `<option${x === gateStatus(g) ? " selected" : ""}>${esc(x)}</option>`).join("")}</select></div>
+    <div class="drow"><div class="k">Note</div>
+      <textarea data-gate-note="${esc(g.id)}" rows="4" placeholder="Progress note…">${esc(ov("gates", g.id, "note", ""))}</textarea>${editedNote("gates", g.id)}</div>`);
+}
+
+function drawerRisk(id) {
+  const r = D.risks.find((x) => x.id === id);
+  if (!r) return;
+  const l = ov("risks", r.id, "likelihood", r.likelihood), c = ov("risks", r.id, "consequence", r.consequence);
+  openDrawer(`
+    <div style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">Risk ${esc(r.id)}</div>
+    <h3 id="drawer-title">${esc(r.title)}</h3>
+    <div style="margin:10px 0"><span class="pill ${l * c >= 15 ? "red" : l * c >= 9 ? "amber" : "grey"}">Score ${l * c}</span>
+      <span class="pill grey">${esc(ov("risks", r.id, "status", r.status))}</span></div>
+    <div class="drow"><div class="k">Why it matters</div>${esc(r.note)}</div>
+    <div class="drow"><div class="k">Treatment</div>${esc(r.treatment)}</div>
+    <div class="drow"><div class="k">Owner</div>${esc(ov("risks", r.id, "owner", r.owner))}</div>
+    <div class="drow"><div class="k">Likelihood</div>
+      <select data-risk-l="${esc(r.id)}" aria-label="Likelihood">${[1, 2, 3, 4, 5].map((x) => `<option${x === l ? " selected" : ""}>${x}</option>`).join("")}</select>
+      <span style="margin-left:12px" class="k">Consequence</span>
+      <select data-risk-c="${esc(r.id)}" aria-label="Consequence">${[1, 2, 3, 4, 5].map((x) => `<option${x === c ? " selected" : ""}>${x}</option>`).join("")}</select></div>
+    <div class="drow"><div class="k">Note</div>
+      <textarea data-risk-note="${esc(r.id)}" rows="4" placeholder="Update…">${esc(ov("risks", r.id, "note", ""))}</textarea>${editedNote("risks", r.id)}</div>`);
+}
+
+/* ---------- routing & events ---------- */
+const VIEWS = { program: viewProgram, clauses: viewClauses, proposals: viewProposals, engagement: viewEngagement, pilots: viewPilots, risks: viewRisks };
+const route = () => (location.hash.replace("#", "") in VIEWS ? location.hash.replace("#", "") : "program");
+
+function render() {
+  const r = route();
+  $("#view").innerHTML = VIEWS[r]();
+  renderTop();
+  for (const a of document.querySelectorAll("#nav a")) {
+    if (a.getAttribute("href") === "#" + r) a.setAttribute("aria-current", "page");
+    else a.removeAttribute("aria-current");
+  }
+  for (const t of document.querySelectorAll("#view textarea")) autosize(t);
+}
+const autosize = (t) => { t.style.height = "auto"; t.style.height = Math.min(t.scrollHeight + 2, 180) + "px"; };
+
+addEventListener("hashchange", () => { closeDrawer(); scrollTo(0, 0); render(); });
+
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-proposal],[data-gate],[data-risk],[data-close],#f-clear,#f-pclear,#themebtn");
+  if (!b) return;
+  if (b.hasAttribute("data-close")) return closeDrawer();
+  if (b.id === "themebtn") {
+    const cur = document.documentElement.getAttribute("data-theme");
+    const next = cur === "dark" ? "light" : cur === "light" ? null : matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "dark";
+    if (next) document.documentElement.setAttribute("data-theme", next);
+    else document.documentElement.removeAttribute("data-theme");
+    return;
+  }
+  if (b.id === "f-clear") { filters.q = filters.part = filters.disp = filters.owner = filters.tag = ""; return render(); }
+  if (b.id === "f-pclear") { filters.pstatus = filters.punit = ""; return render(); }
+  if (b.hasAttribute("data-proposal")) return drawerProposal(b.getAttribute("data-proposal"));
+  if (b.hasAttribute("data-gate")) return drawerGate(b.getAttribute("data-gate"));
+  if (b.hasAttribute("data-risk")) return drawerRisk(b.getAttribute("data-risk"));
+});
+
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDrawer(); });
+
+document.addEventListener("change", (e) => {
+  const t = e.target;
+  if (t.id === "initials") { initials = t.value.trim(); try { localStorage.setItem("llr-initials", initials); } catch (err) {} return; }
+  if (t.id === "f-part") { filters.part = t.value; return render(); }
+  if (t.id === "f-disp") { filters.disp = t.value; return render(); }
+  if (t.id === "f-owner") { filters.owner = t.value; return render(); }
+  if (t.id === "f-tag") { filters.tag = t.value; return render(); }
+  if (t.id === "f-ps") { filters.pstatus = t.value; return render(); }
+  if (t.id === "f-pu") { filters.punit = t.value; return render(); }
+
+  if (t.dataset.clause) { stamp("clauses", t.dataset.clause, { [t.dataset.field]: t.value }); return render(); }
+  if (t.dataset.proposalField) { stamp("proposals", t.dataset.proposalField, { status: t.value }); return render(); }
+  if (t.dataset.proposalNote !== undefined && t.dataset.proposalNote) { stamp("proposals", t.dataset.proposalNote, { note: t.value }); return; }
+  if (t.dataset.gateStatus) { stamp("gates", t.dataset.gateStatus, { status: t.value }); render(); return drawerGate(t.dataset.gateStatus); }
+  if (t.dataset.gateNote) { stamp("gates", t.dataset.gateNote, { note: t.value }); return; }
+  if (t.dataset.pilot) { stamp("pilots", t.dataset.pilot, { status: t.value }); return render(); }
+  if (t.dataset.eng) { stamp("engagement", t.dataset.eng, { status: t.value }); return render(); }
+  if (t.dataset.riskstatus) { stamp("risks", t.dataset.riskstatus, { status: t.value }); return render(); }
+  if (t.dataset.riskL) { stamp("risks", t.dataset.riskL, { likelihood: Number(t.value) }); render(); return drawerRisk(t.dataset.riskL); }
+  if (t.dataset.riskC) { stamp("risks", t.dataset.riskC, { consequence: Number(t.value) }); render(); return drawerRisk(t.dataset.riskC); }
+  if (t.dataset.riskNote) { stamp("risks", t.dataset.riskNote, { note: t.value }); return; }
+});
+
+let qtimer;
+document.addEventListener("input", (e) => {
+  const t = e.target;
+  if (t.tagName === "TEXTAREA") autosize(t);
+  if (t.id === "f-q") {
+    filters.q = t.value;
+    clearTimeout(qtimer);
+    qtimer = setTimeout(() => { const pos = t.selectionStart; render(); const n = $("#f-q"); if (n) { n.focus(); n.setSelectionRange(pos, pos); } }, 220);
+  }
+});
+
+$("#initials").value = initials;
+render();
+</script>

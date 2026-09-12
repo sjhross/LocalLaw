@@ -1,0 +1,40 @@
+{
+  "law": {
+    "title": "General Local Law 2018 (No. 1)",
+    "council": "City of Stonnington",
+    "commenced": "2018-07-20",
+    "sunset": "2028-07-19",
+    "amended": "2023 (Part 4 repealed — moved to Governance Rules)",
+    "madeUnder": "s.111 Local Government Act 1989 and s.42 Domestic Animals Act 1994",
+    "incorporated": ["Procedure and Protocol Manual", "Keeping of Animals Policy", "Footpath Trading Policy"]
+  },
+  "phases": [
+    {"id":"F1","name":"Initiate & diagnose","start":"2026-09-01","end":"2027-02-26","lead":"Governance & Legal","detail":"Project plan, governance, clause-by-clause internal review, triage of the held-over backlog."},
+    {"id":"F2","name":"Evidence & benchmarking","start":"2026-10-01","end":"2027-03-31","lead":"Local Laws & Compliance","detail":"Enforcement and request data, permit volumes, VCAT and complaint history, comparison against neighbouring councils' current laws."},
+    {"id":"F3","name":"Community & stakeholder engagement","start":"2027-02-15","end":"2027-05-28","lead":"Community & Wellbeing","detail":"Issues-stage engagement under the Community Engagement Policy — before positions are fixed."},
+    {"id":"F4","name":"Pilots & operational testing","start":"2026-11-02","end":"2027-06-30","lead":"Local Laws & Compliance","detail":"Test proposed changes operationally under existing powers, permit conditions or policy, so the drafting rests on evidence."},
+    {"id":"F5","name":"Policy settlement","start":"2027-05-03","end":"2027-08-31","lead":"Governance & Legal","detail":"Councillor briefings, position papers, resolution of contested items."},
+    {"id":"F6","name":"Drafting & statutory assessments","start":"2027-07-01","end":"2027-10-29","lead":"Governance & Legal","detail":"Drafting instructions, legal drafting, Community Impact Statement, Human Rights Charter assessment, competition assessment."},
+    {"id":"F7","name":"Statutory exhibition & submissions","start":"2027-11-01","end":"2028-02-29","lead":"Governance & Legal","detail":"Public notice, exhibition of the proposed local law, receipt and hearing of submissions."},
+    {"id":"F8","name":"Making, gazettal & commencement","start":"2028-03-01","end":"2028-06-30","lead":"Governance & Legal","detail":"Council resolution to make the law, publication in the Government Gazette, public notice, commencement."},
+    {"id":"F9","name":"Transition & implementation","start":"2028-04-03","end":"2028-09-29","lead":"Local Laws & Compliance","detail":"Delegations and authorisations, officer training, permit migration, signage, incorporated document updates, communications."}
+  ],
+  "gates": [
+    {"id":"G1","date":"2026-10-26","forum":"Executive Leadership Team","title":"Project plan, governance and resourcing endorsed","phase":"F1","owner":"Project Manager","status":"In progress","test":"Sponsor, steering group, budget and a named drafting resource are all confirmed in writing.","authority":"Internal project governance","confirm":false},
+    {"id":"G2","date":"2026-12-14","forum":"Council","title":"Review commenced — scope and engagement plan endorsed","phase":"F1","owner":"Director Corporate","status":"Not started","test":"Council resolves to commence the review and endorses the engagement approach under the Community Engagement Policy.","authority":"Local Government Act 2020 s.55 (community engagement policy)","confirm":true},
+    {"id":"G3","date":"2027-03-01","forum":"Executive Leadership Team","title":"Clause triage complete, backlog dispositioned","phase":"F1","owner":"Project Manager","status":"Not started","test":"Every clause in the register carries a disposition and an owner; every backlog item is in scope, out of scope or deferred with a reason.","authority":"Internal project governance","confirm":false},
+    {"id":"G4","date":"2027-06-28","forum":"Executive Leadership Team","title":"Consultation findings and pilot evidence accepted","phase":"F3","owner":"Project Manager","status":"Not started","test":"Engagement report published back to participants; each pilot has a written evaluation against its stated measure.","authority":"Internal project governance","confirm":false},
+    {"id":"G5","date":"2027-08-16","forum":"Councillor briefing","title":"Policy positions confirmed","phase":"F5","owner":"Director Corporate","status":"Not started","test":"Councillors have seen an options paper on every contested item and indicated a preferred position.","authority":"Internal project governance","confirm":false},
+    {"id":"G6","date":"2027-09-13","forum":"Council","title":"Drafting instructions and Community Impact Statement approved","phase":"F6","owner":"Manager Governance","status":"Not started","test":"Instructions signed off; Community Impact Statement covers restriction of competition and administrative burden.","authority":"Victorian local law guidelines — community impact statement","confirm":true},
+    {"id":"G7","date":"2027-10-25","forum":"Executive Leadership Team","title":"Draft law and statutory assessments complete","phase":"F6","owner":"Manager Governance","status":"Not started","test":"Draft law, Charter of Human Rights compatibility assessment and competition assessment are complete and legally reviewed.","authority":"Charter of Human Rights and Responsibilities Act 2006","confirm":true},
+    {"id":"G8","date":"2027-11-22","forum":"Council","title":"Resolve to give notice of the proposed local law","phase":"F7","owner":"Director Corporate","status":"Not started","test":"Council resolves to give public notice; notice states purpose and general purport and where a copy may be obtained.","authority":"Local Government Act 2020 Part 3 Div. 2 — process for making a local law","confirm":true},
+    {"id":"G9","date":"2028-02-21","forum":"Council","title":"Submissions considered and submitters heard","phase":"F7","owner":"Manager Governance","status":"Not started","test":"All submissions tabled, submitters who asked to be heard have been heard, and a response to each theme is documented.","authority":"Council's Community Engagement Policy and Governance Rules","confirm":true},
+    {"id":"G10","date":"2028-04-17","forum":"Council","title":"Resolve to make the local law","phase":"F8","owner":"Director Corporate","status":"Not started","test":"Council resolves to make the local law in its final form. This is the immovable decision — everything downstream is administrative.","authority":"Local Government Act 2020 Part 3 Div. 2","confirm":true},
+    {"id":"G11","date":"2028-05-15","forum":"Administrative","title":"Published in the Government Gazette, public notice given, copy to the Minister","phase":"F8","owner":"Manager Governance","status":"Not started","test":"Gazette notice published, public notice given, and a copy provided to the Minister within the statutory period.","authority":"Local Government Act 2020 Part 3 Div. 2 — publication requirements","confirm":true},
+    {"id":"G12","date":"2028-06-19","forum":"Administrative","title":"New law commences — 30 days clear of the sunset","phase":"F8","owner":"Project Manager","status":"Not started","test":"New law in operation, delegations and authorisations remade, officers trained, permits migrated, website and signage updated.","authority":"Local Government Act 2020 Part 3 Div. 2","confirm":true}
+  ],
+  "boundaries": [
+    {"date":"2028-07-19","label":"Sunset — General Local Law 2018 (No. 1) ceases to operate","kind":"immovable","note":"Clause 4 of the current law. A ten-year life from commencement on 20 July 2018. There is no power to extend it: if nothing replaces it, every permit trigger, notice power and infringeable offence in the register stops on this date."},
+    {"date":"2028-09-19","label":"Indicative start of the election caretaker period","kind":"hard","note":"Victorian council general elections fall in October 2028. Major decisions are constrained once the election period starts, so there is no usable float past August 2028. Confirm the exact date with Governance when the Victorian Electoral Commission publishes it."}
+  ]
+}
