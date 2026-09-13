@@ -19,11 +19,13 @@ shared with everyone who opens it.
 | **Engagement** | Issues-stage and statutory activities, each with its IAP2 level and the promise that level makes. |
 | **Pilots** | Seven pilots, each running under powers Council already has, each with a hypothesis and a stated measure, all reporting by G4. |
 | **Risks & decisions** | 5×5 risk matrix with treatments, plus the decision log that stops settled questions being reopened. |
+| **Rule check** | Ask a question in the words a resident or trader would use and get an answer from the text of the clauses themselves, cited, with those clauses shown underneath to verify against. |
 
 ## Repository layout
 
 ```
 data/clauses.psv       the register of the 2018 law — part, clause, title, type markers
+data/clause-text.json  the operative text of every clause (generated)
 data/proposals.json    the change backlog
 data/program.json      phases, gates and the immovable dates
 data/pilots.json       pilot register
@@ -39,6 +41,7 @@ reference/             the 2018 local law as supplied, plus extracted text
 Edit the data, then:
 
 ```
+node extract-clause-text.mjs   # only when reference/ changes
 node build.mjs
 ```
 
@@ -69,3 +72,39 @@ resolution, Gazette publication, a copy to the Minister. Governance and Legal
 should confirm the exact notice period, submission process and publication
 requirements before G2 is written up. If the notice period differs, the dates in
 `data/program.json` need re-cutting.
+
+## The rule check
+
+Ask "Can a business have outdoor speakers with their outdoor dining area?" and the tool
+retrieves the clauses that decide it, sends their full text to Claude, and returns a cited
+answer with those clauses listed underneath so an officer can verify before telling anyone
+anything.
+
+How it finds the right clauses:
+
+- Everyday words are mapped to the law's own words (`speakers` → amplified, noise, audible;
+  `alfresco` → footpath trading, occupy), because otherwise the right clause is never found.
+- Terms are weighted by rarity across the 121 clauses, so `amplified` decides a result and
+  `area` does not.
+- Clause 5 is held out of the search — it defines nearly every word in the law, so it wins
+  every query. The definitions it contains are pulled in separately, by term.
+- Table 2 (the prohibited noise hours) is printed on clause 145's page but belongs to
+  cl.144(7); `extract-clause-text.mjs` moves it, or noise answers would miss the hours.
+
+Three bases, built in from the start:
+
+| Basis | Status |
+| --- | --- |
+| **As it stands** | Live. Answers from the 2018 law as amended in 2023. |
+| **With what we're proposing** | Live, and gets better as the review proceeds. Answers from the law in force, then flags what the register says is changing. Where a clause has draft wording (the "Proposed wording" field in the clause drawer), that wording is used and labelled as not yet law. |
+| **Under the new law** | Disabled until the new law is gazetted, currently planned for May 2028. |
+
+### Limits that matter
+
+It answers from the text of the local law and nothing else. It does not hold the
+incorporated documents, the Planning Scheme or any state Act — where a clause hands part of
+a question to one of those, the answer says so on its face. It is a lookup, not advice and
+not a determination, and anything requiring a permit is decided on application.
+
+**Putting this in front of residents or traders is a separate decision** that needs legal
+sign-off. It is built for officers, who can read the cited clauses underneath every answer.

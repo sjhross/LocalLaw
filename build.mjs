@@ -49,6 +49,8 @@ const parseClauses = (text) =>
     });
 
 const clauses = parseClauses(read("data/clauses.psv"));
+const clauseText = readJson("data/clause-text.json");
+for (const c of clauses) c.text = clauseText[c.id] || "";
 const proposals = readJson("data/proposals.json");
 
 // Link each clause to the backlog items that touch it.

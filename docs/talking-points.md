@@ -38,6 +38,14 @@ Video file: `docs/media/local-law-review-demo.mp4` (62s, silent, captioned)
   register, and every disposition still carries the name of whoever set it.
 - Deliberately not a chatbot. The test applied: does it attack something that happens
   every fortnight, and does it hand a human something to sign off?
+- The rule check answers "what does the local law actually say about this?" from the clause
+  text, cited, with the clauses shown underneath so an officer verifies before answering
+  anyone. Ask it the outdoor-speakers question — it is the sharpest demo in the tool.
+- It is built three-state from day one: as it stands / with what we're proposing / under the
+  new law. The third is disabled until gazettal. The second gets better as the register
+  fills in, and uses draft wording once drafting produces it.
+- It says what it does not know. Where a clause hands part of the question to the Footpath
+  Trading Policy or the Planning Scheme, the answer says so on its face rather than guessing.
 - Roadmap, not now: theming free-text submissions at exhibition in late 2027 and mapping
   each theme back to a clause. That is the substantial win, and it needs real submissions.
 
@@ -53,6 +61,9 @@ Video file: `docs/media/local-law-review-demo.mp4` (62s, silent, captioned)
 - Statutory steps need Governance and Legal confirmation before the first Council report.
 - Talk to Information Management before real content goes in.
 - Not a submissions system; scope that separately at G6.
+- The rule check is a lookup, not advice and not a determination. Putting it in front of
+  residents or traders is a separate decision needing legal sign-off — it is built for
+  officers, who can read the cited clauses.
 - The drafting feature asks each viewer for consent and runs on their own Claude access —
   check what that means for colleagues before promising it to a room.
 

@@ -246,6 +246,37 @@ textarea{width:100%;resize:vertical;line-height:1.45;font-size:12.5px;min-height
 .draftbody .cursor{display:inline-block;width:7px;height:14px;background:var(--accent);vertical-align:-2px;animation:bl 1s steps(2) infinite}
 @keyframes bl{50%{opacity:0}}
 .draftfoot{display:flex;gap:9px;padding:0 18px 16px;flex-wrap:wrap;align-items:center}
+.ask{display:flex;gap:9px;flex-wrap:wrap;align-items:stretch;margin-bottom:12px}
+.ask input{flex:1;min-width:250px;font-size:15px;padding:11px 13px;font-family:var(--sans)}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:3px;overflow:hidden;background:var(--surface)}
+.seg button{background:none;border:0;border-left:1px solid var(--rule);padding:7px 13px;font-size:12.5px;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.seg button:first-child{border-left:0}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.seg button[disabled]{color:var(--ink-3);cursor:not-allowed;background:var(--surface-2)}
+.basisnote{font-size:12px;color:var(--ink-3);margin:0 0 16px;max-width:74ch;line-height:1.5}
+.egs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:20px}
+.eg{background:var(--surface);border:1px solid var(--rule);border-radius:20px;padding:5px 12px;font-size:12.5px;color:var(--ink-2);cursor:pointer;text-align:left}
+.eg:hover{border-color:var(--accent);color:var(--accent)}
+.answer{background:var(--surface);border:1px solid var(--rule);border-radius:3px;margin-bottom:18px}
+.answer .q{padding:14px 18px 12px;border-bottom:1px solid var(--rule);font-family:var(--serif);font-size:18px;line-height:1.35}
+.answer .bod{padding:2px 18px 16px;max-width:76ch}
+.clref{display:inline;background:var(--teal-wash);color:var(--teal);border:0;border-radius:2px;padding:0 4px;font-family:var(--mono);font-size:11.5px;cursor:pointer;white-space:nowrap}
+.clref:hover{background:var(--teal);color:var(--surface)}
+.deps{display:flex;gap:9px;align-items:flex-start;padding:11px 18px;border-top:1px solid var(--rule);background:var(--amber-wash);font-size:12.5px;color:var(--ink-2);line-height:1.55}
+.deps b{color:var(--ink)}
+.sources{border-top:1px solid var(--rule);padding:12px 18px 14px}
+.sources>.k{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px}
+details.src{border-top:1px solid var(--rule);padding:7px 0}
+details.src:first-of-type{border-top:0}
+details.src summary{cursor:pointer;font-size:13px;display:flex;gap:9px;align-items:baseline;list-style:none}
+details.src summary::-webkit-details-marker{display:none}
+details.src summary::before{content:"+";font-family:var(--mono);color:var(--ink-3);width:11px}
+details.src[open] summary::before{content:"–"}
+details.src summary .cn{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);white-space:nowrap}
+details.src summary .ct{font-weight:500}
+.lawtext{white-space:pre-wrap;font-size:12.5px;line-height:1.55;color:var(--ink-2);margin:9px 0 4px 20px;padding-left:12px;border-left:2px solid var(--rule);max-width:74ch}
+.propbox{margin:8px 0 4px 20px;padding:9px 12px;background:var(--surface-2);border-left:2px solid var(--teal);font-size:12.5px;line-height:1.55;color:var(--ink-2)}
+.propbox .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:4px}
 .caveat{background:var(--amber-wash);border:1px solid color-mix(in srgb,var(--amber) 30%,transparent);border-radius:3px;padding:11px 13px;font-size:12.5px;color:var(--ink-2);line-height:1.55;margin:16px 0}
 .caveat b{color:var(--ink);font-weight:600}
 .saved{font-size:11px;color:var(--green);font-family:var(--mono)}
@@ -277,6 +308,7 @@ textarea{width:100%;resize:vertical;line-height:1.45;font-size:12.5px;min-height
       <a href="#engagement"><span class="n">04</span>Engagement</a>
       <a href="#pilots"><span class="n">05</span>Pilots</a>
       <a href="#risks"><span class="n">06</span>Risks &amp; decisions</a>
+      <a href="#check"><span class="n">07</span>Rule check</a>
     </nav>
     <div class="railfoot">
       <div class="who">
@@ -331,6 +363,7 @@ const overlay = { clauses: {}, proposals: {}, gates: {}, pilots: {}, risks: {}, 
 let dbDoc = null, dbExists = false;
 let sampleFn = null;
 const draft = { text: "", busy: false, at: null, err: "" };
+const check = { q: "", basis: "current", busy: false, asked: "", answer: "", cites: [], deps: [], err: "" };
 const filters = { q: "", part: "", disp: "", owner: "", tag: "", pstatus: "", punit: "" };
 let initials = "";
 try { initials = localStorage.getItem("llr-initials") || ""; } catch (e) {}
@@ -538,6 +571,246 @@ function draftPanel() {
   </div>`;
 }
 
+/* ---------- the rule checker ---------- */
+// Everyday words officers and traders use, mapped onto the words the law
+// actually uses. Without this, "speakers" never finds cl.144 and "alfresco"
+// never finds cl.126.
+const SYNONYMS = {
+  speaker: "amplified music noise audible sound", speakers: "amplified music noise audible sound",
+  music: "amplified noise audible speaker", sound: "noise amplified audible", stereo: "amplified music",
+  pa: "amplified public address", amplifier: "amplified", busk: "promotions spruik public address",
+  busking: "promotions spruik public address", busker: "promotions spruik public address",
+  loud: "noise amplified", noisy: "noise", decibel: "noise amplified", db: "noise amplified",
+  alfresco: "footpath trading occupy permit", outdoor: "outside audible open air",
+  dining: "footpath trading occupy goods commercial", parklet: "footpath trading occupy structure",
+  streatery: "footpath trading occupy structure", table: "footpath trading occupy place item",
+  tables: "footpath trading occupy place item", chair: "footpath trading occupy place item",
+  chairs: "footpath trading occupy place item", umbrella: "footpath trading occupy structure",
+  heater: "footpath trading occupy item thing", screen: "footpath trading occupy structure hoarding",
+  cafe: "footpath trading goods sell", restaurant: "footpath trading goods sell commercial",
+  pub: "liquor commercial amplified", bar: "liquor commercial amplified", venue: "commercial amplified liquor",
+  business: "commercial goods sell trading", trader: "trading goods sell footpath",
+  sign: "advertisement sign poster display", signage: "advertisement sign poster display",
+  aframe: "advertisement footpath trading", advertising: "advertisement billboard poster",
+  tree: "tree significant prune lop damage works protection", trees: "tree significant prune lop",
+  prune: "tree prune lop significant", lop: "tree lop prune significant", canopy: "tree significant",
+  branch: "tree prune overhanging", roots: "tree protection zone works",
+  dog: "animal dog fencing excrement assistance", dogs: "animal dog fencing excrement",
+  cat: "animal keeping policy", cats: "animal keeping policy", pet: "animal keeping",
+  chicken: "animal keeping bird", chickens: "animal keeping bird", bees: "bee swarm wasp",
+  bin: "waste receptacle rubbish hopper trade", bins: "waste receptacle rubbish hopper",
+  skip: "bulk rubbish container road", rubbish: "waste receptacle bulk hard",
+  hardwaste: "hard waste receptacle", recycling: "waste recycling receptacle collection",
+  scooter: "wheeled recreational vehicle toy segway motorised",
+  escooter: "wheeled recreational vehicle toy segway motorised",
+  skateboard: "wheeled skateboard scooter prohibited articles reserve",
+  bike: "bicycle wheeled reserve", bicycle: "bicycle wheeled reserve",
+  drone: "drone model aeroplane helicopter reserve",
+  alcohol: "liquor consume sealed container", drink: "liquor consume", drinking: "liquor consume",
+  bbq: "barbecue fire reserve", barbecue: "barbecue fire reserve", fire: "fire barbecue incinerator alight",
+  camp: "camp caravan tent council land", camping: "camp caravan tent", tent: "camp tent marquee",
+  build: "building activity works permit hours", builder: "building activity hours asset protection",
+  building: "building activity hours dust spoil material", construction: "building activity hours",
+  crane: "crane mobile road boom", scaffold: "scaffolding hoarding protective", scaffolding: "scaffolding hoarding",
+  renovation: "building activity permit hours", demolition: "building activity demolition",
+  film: "filming commercial road council land", filming: "filming commercial", photography: "filming commercial",
+  wedding: "reserve wedding permit", party: "street party festival procession occasional event",
+  festival: "street festival procession party", market: "itinerant trading sell stall goods",
+  stall: "itinerant trading stall sell goods", charity: "street appeal collection solicit clothing bin",
+  fence: "fence fencing vacant dilapidated", fencing: "fence fencing vacant dogs",
+  parking: "parking permit vehicle road residential", permit: "permit application conditions duration",
+  crossing: "vehicle crossing road access", driveway: "vehicle crossing",
+  ev: "obstruction road council land", charging: "obstruction road council land",
+  trolley: "shopping trolley", trolleys: "shopping trolley",
+  graffiti: "graffiti advertisement deface", weeds: "vermin noxious weeds unsightly",
+  grass: "unsightly undergrowth fire land", unsightly: "unsightly land amenity",
+  fine: "penalty infringement offence unit", fined: "penalty infringement offence",
+  penalty: "penalty infringement units offence", appeal: "appeal aggrieved notice comply",
+  train: "personal training reserve charge", training: "personal training reserve charge",
+  sport: "reserve sport game competitive playing", golf: "reserve golf archery",
+};
+const STOP = new Set("a an and are as at be by can could do does for from have how i if in is it its may must my not of on or our shall should so that the their there they this to under was we what when where which who will with without you your".split(" "));
+
+function expand(q) {
+  const words = q.toLowerCase().replace(/[^a-z0-9\s-]/g, " ").split(/[\s-]+/).filter(Boolean);
+  const terms = [];
+  for (let w of words) {
+    if (STOP.has(w)) continue;
+    terms.push(w);
+    const sing = w.replace(/ies$/, "y").replace(/([^s])s$/, "$1");
+    if (sing !== w) terms.push(sing);
+    const syn = SYNONYMS[w] || SYNONYMS[sing];
+    if (syn) terms.push(...syn.split(" "));
+  }
+  return [...new Set(terms)].filter((t) => t.length > 2);
+}
+
+// Clause 5 is the definitions clause: it contains nearly every word in the law,
+// so it wins every search and eats the context window. Definitions are pulled in
+// separately, by term, below.
+const CORPUS = D.clauses.filter((c) => c.id !== "5");
+const LOWER = new Map(CORPUS.map((c) => [c.id, { t: c.title.toLowerCase(), b: c.text.toLowerCase() }]));
+
+// "Area", "person" and "council" appear in most clauses and mean nothing as a
+// search signal; "amplified" appears in two and decides the answer. Weight each
+// term by how rare it is rather than hand-maintaining a stop list.
+const dfCache = new Map();
+function idf(term) {
+  if (!dfCache.has(term)) {
+    let df = 0;
+    for (const v of LOWER.values()) if (v.b.includes(term) || v.t.includes(term)) df++;
+    dfCache.set(term, Math.log(CORPUS.length / (1 + df)));
+  }
+  return Math.max(dfCache.get(term), 0.05);
+}
+
+function retrieve(q, limit) {
+  const terms = expand(q);
+  if (!terms.length) return [];
+  const scored = CORPUS.map((c) => {
+    const { t, b } = LOWER.get(c.id);
+    let sc = 0;
+    for (const term of terms) {
+      const w = idf(term);
+      if (t.includes(term)) sc += 6 * w;
+      sc += Math.min(b.split(term).length - 1, 5) * 1.2 * w;
+    }
+    return { c, sc };
+  }).sort((a, b) => b.sc - a.sc);
+  const top = scored[0] ? scored[0].sc : 0;
+  if (top < 2) return [];
+  const floor = Math.max(2, top * 0.14);
+  return scored.filter((x) => x.sc >= floor).slice(0, limit || 8).map((x) => x.c);
+}
+
+// The defined terms out of cl.5, so the answer can use them precisely.
+const DEFS = (() => {
+  const src = (D.clauses.find((c) => c.id === "5") || {}).text || "";
+  const re = /[“"]([^”"\n]{2,48})[”"]\s*(?=means|includes|has the same meaning)/g;
+  const hits = [];
+  let m;
+  while ((m = re.exec(src))) hits.push({ term: m[1].trim(), at: m.index });
+  return hits.map((h, i) => ({
+    term: h.term,
+    def: src.slice(h.at, i + 1 < hits.length ? hits[i + 1].at : src.length).replace(/\s*\n\s*/g, " ").trim(),
+  }));
+})();
+
+function defsFor(cl, q) {
+  const hay = (q + " " + cl.map((c) => c.text).join(" ")).toLowerCase();
+  return DEFS.filter((d) => new RegExp("\\b" + d.term.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b").test(hay))
+    .sort((a, b) => a.def.length - b.def.length)
+    .slice(0, 14);
+}
+
+const INCORPORATED = ["Footpath Trading Policy", "Keeping of Animals Policy", "Procedure and Protocol Manual", "Procedure and Protocols Manual", "Nature Strip Planting Policy", "Planning Scheme"];
+const dependsOn = (cl) => {
+  const found = new Set();
+  for (const c of cl) for (const d of INCORPORATED) if (c.text.includes(d)) found.add(d.replace("Protocols", "Protocol"));
+  return [...found];
+};
+
+const BASES = {
+  current: { label: "As it stands", note: "Answers from General Local Law 2018 (No. 1) as amended in 2023 — the law in force today, until 19 July 2028." },
+  proposed: { label: "With what we're proposing", note: "Answers from the law in force, then flags where the register says that clause is set to change and whether the answer would move with it. Where drafting has produced wording, that wording is used and labelled as not yet law." },
+  final: { label: "Under the new law", note: "Available once the new law is made and gazetted — currently planned for May 2028. Until then there is nothing to answer from." },
+};
+
+// What the register knows about a clause under the proposed basis.
+function proposedNote(c) {
+  const d = dispOf(c);
+  const drafted = ov("clauses", c.id, "proposedText", "");
+  const props = c.proposals
+    .map((id) => D.proposals.find((p) => p.id === id))
+    .filter((p) => p && pstatusOf(p) !== "Out of scope");
+  if (d === "Retain" && !props.length && !drafted) return "";
+  const bits = [`Register status: ${d}${d === "Not started" ? " — no decision has been taken on this clause yet" : ""}.`];
+  for (const p of props) bits.push(`${p.id} (${pstatusOf(p)}): ${p.title}. ${p.note}`);
+  if (drafted) bits.push(`DRAFT WORDING, NOT YET LAW:\n${drafted}`);
+  return bits.join("\n");
+}
+
+const PERMIT_CONTEXT = `Part 17 governs permits generally: a permit may be issued with or without conditions (cl.180), runs one year from issue unless the permit says otherwise (cl.184), is personal to the named person and not transferable without Council's consent (cl.187), and Council may exempt a person or class of persons from needing one (cl.189). A permit is always a decision on application, never automatic.`;
+
+function checkPrompt(q, cl, basis) {
+  const law = cl.map((c) => {
+    let block = `--- CLAUSE ${c.id} (Part ${c.part}, ${c.partTitle}) ---\n${c.text}`;
+    if (basis === "proposed") {
+      const pn = proposedNote(c);
+      if (pn) block += `\n--- REGISTER: WHAT IS PROPOSED FOR CLAUSE ${c.id} ---\n${pn}`;
+    }
+    return block;
+  }).join("\n\n");
+
+  const sections = basis === "proposed"
+    ? "SHORT ANSWER\nWHAT THE LAW SAYS TODAY\nWHAT WE ARE PROPOSING TO CHANGE\nWHAT THIS DOES NOT SETTLE"
+    : "SHORT ANSWER\nWHAT THE LAW SAYS\nWHAT THIS DOES NOT SETTLE";
+
+  const defs = defsFor(cl, q);
+  const defBlock = defs.length
+    ? `\n\n--- DEFINED TERMS (clause 5) ---\n` + defs.map((d) => d.def).join("\n")
+    : "";
+
+  return `You answer questions about the City of Stonnington General Local Law 2018 (No. 1) for Council officers. You are given the full text of the clauses most likely to be relevant. Answer ONLY from that text.
+
+Hard rules:
+- Never cite a clause number that does not appear below. If the clauses below do not answer the question, say so plainly and say what would answer it.
+- Cite as "cl.144(6)(a)" — clause number then sub-clause. Cite for every statement about what the law requires.
+- Quote the operative words where the wording decides the answer.
+- Words with a capital letter in the law are defined terms. Use them precisely.
+- This is not legal advice and not a determination. Anything needing a permit is decided on application, so never tell someone they will get one.
+- ${PERMIT_CONTEXT}
+- Where a clause points at an incorporated document, a state Act or the Planning Scheme, say that the answer is incomplete without it. Do not guess what those documents say.
+
+Use exactly these headings, each on its own line in capitals:
+${sections}
+
+Start bullets with "- ". Plain text only: no markdown, no bold markers. Under 280 words. Be direct — an officer needs to give someone an answer at a counter.
+
+QUESTION: ${q}
+
+${law}${defBlock}`;
+}
+
+async function runCheck(q) {
+  if (!sampleFn || check.busy || !q.trim()) return;
+  const cl = retrieve(q, 8);
+  check.busy = true; check.err = ""; check.answer = ""; check.asked = q.trim();
+  check.cites = cl; check.deps = dependsOn(cl);
+  render();
+  if (!cl.length) {
+    check.busy = false;
+    check.err = "Nothing in the local law matched that. Try the words the law uses — a permit, a reserve, a road, an animal, building activity.";
+    return render();
+  }
+  try {
+    const res = await sampleFn(checkPrompt(q.trim(), cl, check.basis), {
+      modelTier: "complex",
+      onText: ({ text }) => {
+        check.answer = text;
+        const el = document.getElementById("ansbody");
+        if (el) el.innerHTML = linkClauses(renderDraft(text, true));
+      },
+    });
+    check.answer = res.text;
+  } catch (e) {
+    check.err = e && e.code === "rate_limited"
+      ? "Too many questions at once. Try again in a minute."
+      : "The answer did not come back. The clause text below is still the law — read it directly.";
+    if (e && e.text) check.answer = e.text;
+  }
+  check.busy = false;
+  render();
+}
+
+// Turns "cl.144(6)" in the answer into something you can open and verify.
+function linkClauses(html) {
+  return html.replace(/\bcl\.?\s?(\d{1,3})((?:\([0-9a-z]+\))*)/g, (m, id, sub) =>
+    D.clauses.some((c) => c.id === id)
+      ? `<button class="clref" data-clause-open="${id}">cl.${id}${sub}</button>`
+      : m);
+}
+
 /* ---------- derived program facts ---------- */
 const LAW = D.program.law;
 const GATES = D.program.gates.map((g) => Object.assign({}, g));
@@ -703,7 +976,7 @@ function viewClauses() {
     }
     const d = dispOf(c), o = ownerOf(c);
     rows.push(`<tr>
-      <td class="num">cl.&nbsp;${esc(c.id)}</td>
+      <td class="num"><button class="clref" data-clause-open="${esc(c.id)}" title="Read the clause">cl.&nbsp;${esc(c.id)}</button></td>
       <td><div class="ti">${esc(c.title)}</div>
         <div class="meta">${c.tags.map((g) => `<span class="chip ${TAG_LABEL[g][0]}">${esc(TAG_LABEL[g][1])}</span>`).join("")}
         ${c.proposals.map((p) => `<button class="chip link" data-proposal="${esc(p)}">${esc(p)}</button>`).join("")}</div></td>
@@ -952,6 +1225,67 @@ function viewRisks() {
     <tbody>${drows}</tbody></table></div>`;
 }
 
+/* ---------- view: rule check ---------- */
+const EXAMPLES = [
+  "Can a business have outdoor speakers with their outdoor dining area?",
+  "Can a resident remove a large tree in their back yard?",
+  "Do I need a permit to leave a skip bin on the street?",
+  "Can a builder pour concrete at 7am on a Saturday?",
+  "Can someone busk on Chapel Street?",
+  "Can a café put a heater and a screen on the footpath?",
+];
+
+function viewCheck() {
+  const b = BASES[check.basis];
+  const unavailable = !sampleFn;
+
+  const seg = Object.entries(BASES).map(([k, v]) =>
+    `<button type="button" data-basis="${k}" aria-pressed="${check.basis === k}"${k === "final" ? " disabled title=\"Available once the new law is gazetted\"" : ""}>${esc(v.label)}</button>`).join("");
+
+  const sources = check.cites.map((c) => {
+    const pn = check.basis === "proposed" ? proposedNote(c) : "";
+    return `<details class="src"${check.cites.length <= 2 ? " open" : ""}>
+      <summary><span class="cn">cl.&nbsp;${esc(c.id)}</span><span class="ct">${esc(c.title)}</span><span class="pill ${DISP_PILL[dispOf(c)]}">${esc(dispOf(c))}</span></summary>
+      <div class="lawtext">${esc(c.text)}</div>
+      ${pn ? `<div class="propbox"><div class="k">Proposed — not law</div>${esc(pn)}</div>` : ""}
+    </details>`;
+  }).join("");
+
+  const answered = check.asked && (check.answer || check.busy || check.err);
+
+  return `
+  <div class="vh">
+    <div class="eyebrow">07 — Rule check</div>
+    <h2>What does the local law actually say about this?</h2>
+    <p>Ask in the words a resident or a trader would use. The answer comes back from the text of the clauses themselves, cited, with the clauses underneath so you can read them yourself before you tell anyone anything.</p>
+  </div>
+
+  ${unavailable ? `<div class="caveat"><b>Not available in this view.</b> The rule check needs the drafting capability, which this copy of the page cannot reach. The clause register still holds the full text of every clause.</div>` : ""}
+
+  <div class="ask">
+    <input type="search" id="c-q" placeholder="Can a business have outdoor speakers with their outdoor dining area?" value="${esc(check.q)}" aria-label="Your question"${unavailable ? " disabled" : ""}>
+    <button class="dobtn" id="c-go" type="button"${check.busy || unavailable ? " disabled" : ""}>${check.busy ? "Checking…" : "Check"}</button>
+  </div>
+  <div class="ask" style="margin-bottom:8px"><div class="seg">${seg}</div></div>
+  <p class="basisnote">${esc(b.note)}</p>
+
+  ${!answered ? `<div class="egs">${EXAMPLES.map((e) => `<button class="eg" type="button" data-eg="${esc(e)}">${esc(e)}</button>`).join("")}</div>` : ""}
+
+  ${answered ? `<div class="answer">
+    <div class="q">${esc(check.asked)}</div>
+    <div class="bod" id="ansbody">${check.answer ? linkClauses(renderDraft(check.answer, check.busy)) : `<p style="color:var(--ink-3)">Reading ${check.cites.length} clauses…</p>`}</div>
+    ${check.answer && !check.busy ? `<div class="deps" style="background:var(--surface-2);color:var(--ink-3)"><div>A lookup from the text of the local law — not advice, and not a determination. Read the cited clauses below before you act on it.</div></div>` : ""}
+    ${check.err ? `<div class="deps"><div><b>${esc(check.err)}</b></div></div>` : ""}
+    ${check.deps.length ? `<div class="deps"><div><b>This answer is incomplete on its own.</b> The clauses above hand part of the question to ${esc(check.deps.join(", "))} — ${check.deps.length > 1 ? "documents" : "a document"} this tool does not hold. Check ${check.deps.length > 1 ? "them" : "it"} before giving a final answer.</div></div>` : ""}
+    <div class="sources"><div class="k">The clauses this was answered from — ${check.cites.length} of ${D.clauses.length}</div>${sources}
+      ${(() => { const defs = defsFor(check.cites, check.asked); return defs.length ? `<details class="src"><summary><span class="cn">cl.&nbsp;5</span><span class="ct">Defined terms used above — ${defs.length}</span></summary><div class="lawtext">${esc(defs.map((d) => d.def).join("\n\n"))}</div></details>` : ""; })()}
+    </div>
+  </div>
+  <div class="egs">${EXAMPLES.map((e) => `<button class="eg" type="button" data-eg="${esc(e)}">${esc(e)}</button>`).join("")}</div>` : ""}
+
+  <div class="caveat"><b>This is a lookup, not advice and not a determination.</b> It answers from the text of the local law only. It does not know the Planning Scheme, the incorporated policies, any state Act, or the history of a particular property — and anything requiring a permit is decided on application. Read the cited clauses before you rely on it, and send anything contested to Governance and Legal. Putting this in front of residents or traders is a separate decision that needs sign-off.</div>`;
+}
+
 /* ---------- drawer ---------- */
 function openDrawer(html) {
   $("#drawer-body").innerHTML = html;
@@ -959,6 +1293,26 @@ function openDrawer(html) {
   $("#drawer .close").focus();
 }
 function closeDrawer() { $("#drawer").removeAttribute("open"); }
+
+function drawerClause(id) {
+  const c = D.clauses.find((x) => x.id === id);
+  if (!c) return;
+  const props = c.proposals.map((p) => D.proposals.find((x) => x.id === p)).filter(Boolean);
+  openDrawer(`
+    <div style="font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">Clause ${esc(c.id)} · Part ${c.part}</div>
+    <h3 id="drawer-title">${esc(c.title)}</h3>
+    <div style="margin:10px 0"><span class="pill ${DISP_PILL[dispOf(c)]}">${esc(dispOf(c))}</span>
+      <span class="pill grey">${esc(ownerOf(c))}</span>
+      ${c.tags.map((g) => `<span class="chip ${TAG_LABEL[g][0]}">${esc(TAG_LABEL[g][1])}</span>`).join("")}</div>
+    <div class="drow"><div class="k">The clause as it stands</div><div class="lawtext" style="margin:6px 0 0">${esc(c.text)}</div></div>
+    ${props.length ? `<div class="drow"><div class="k">Proposals touching it</div>${props.map((p) => `<b>${esc(p.id)}</b> (${esc(pstatusOf(p))}) — ${esc(p.title)}`).join("<br>")}</div>` : ""}
+    <div class="drow"><div class="k">Proposed wording — not law</div>
+      <div style="font-size:12px;color:var(--ink-3);margin-bottom:6px">Empty until drafting starts. Anything put here is used by the rule check under “With what we’re proposing”, always labelled as draft.</div>
+      <textarea data-clause="${esc(c.id)}" data-field="proposedText" rows="5" placeholder="Draft wording…">${esc(ov("clauses", c.id, "proposedText", ""))}</textarea>
+      ${editedNote("clauses", c.id)}</div>
+    <div class="drow"><div class="k">Review note</div>
+      <textarea data-clause="${esc(c.id)}" data-field="note" rows="3" placeholder="Review note…">${esc(ov("clauses", c.id, "note", ""))}</textarea></div>`);
+}
 
 function drawerProposal(id) {
   const p = D.proposals.find((x) => x.id === id);
@@ -1023,7 +1377,7 @@ function drawerRisk(id) {
 }
 
 /* ---------- routing & events ---------- */
-const VIEWS = { program: viewProgram, clauses: viewClauses, proposals: viewProposals, engagement: viewEngagement, pilots: viewPilots, risks: viewRisks };
+const VIEWS = { program: viewProgram, clauses: viewClauses, proposals: viewProposals, engagement: viewEngagement, pilots: viewPilots, risks: viewRisks, check: viewCheck };
 const route = () => (location.hash.replace("#", "") in VIEWS ? location.hash.replace("#", "") : "program");
 
 function render() {
@@ -1041,8 +1395,12 @@ const autosize = (t) => { t.style.height = "auto"; t.style.height = Math.min(t.s
 addEventListener("hashchange", () => { closeDrawer(); scrollTo(0, 0); render(); });
 
 document.addEventListener("click", (e) => {
-  const b = e.target.closest("[data-proposal],[data-gate],[data-risk],[data-close],#f-clear,#f-pclear,#themebtn,#draftbtn,#draftcopy");
+  const b = e.target.closest("[data-proposal],[data-gate],[data-risk],[data-clause-open],[data-eg],[data-basis],[data-close],#f-clear,#f-pclear,#themebtn,#draftbtn,#draftcopy,#c-go");
   if (!b) return;
+  if (b.hasAttribute("data-clause-open")) return drawerClause(b.getAttribute("data-clause-open"));
+  if (b.hasAttribute("data-basis")) { check.basis = b.getAttribute("data-basis"); return render(); }
+  if (b.hasAttribute("data-eg")) { check.q = b.getAttribute("data-eg"); render(); return runCheck(check.q); }
+  if (b.id === "c-go") { const i = $("#c-q"); if (i) check.q = i.value; return runCheck(check.q); }
   if (b.id === "draftbtn") return draftUpdate();
   if (b.id === "draftcopy") {
     navigator.clipboard.writeText(draft.text).then(
@@ -1066,7 +1424,10 @@ document.addEventListener("click", (e) => {
   if (b.hasAttribute("data-risk")) return drawerRisk(b.getAttribute("data-risk"));
 });
 
-document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDrawer(); });
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeDrawer();
+  if (e.key === "Enter" && e.target.id === "c-q") { check.q = e.target.value; runCheck(check.q); }
+});
 
 document.addEventListener("change", (e) => {
   const t = e.target;
@@ -1095,6 +1456,7 @@ let qtimer;
 document.addEventListener("input", (e) => {
   const t = e.target;
   if (t.tagName === "TEXTAREA") autosize(t);
+  if (t.id === "c-q") { check.q = t.value; return; }
   if (t.id === "f-q") {
     filters.q = t.value;
     clearTimeout(qtimer);
