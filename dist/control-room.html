@@ -226,6 +226,26 @@ textarea{width:100%;resize:vertical;line-height:1.45;font-size:12.5px;min-height
 .drow{padding:11px 0;border-top:1px solid var(--rule);font-size:13px;line-height:1.55;color:var(--ink-2)}
 .drow .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
 
+.draftbox{background:var(--surface);border:1px solid var(--rule);border-radius:3px}
+.drafthead{display:flex;gap:16px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;padding:16px 18px}
+.drafthead h4{font-family:var(--serif);font-size:14.5px;font-weight:500;margin:0 0 3px}
+.drafthead .lede{font-size:12px;color:var(--ink-3);margin:0;max-width:54ch}
+.dobtn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:3px;padding:8px 15px;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
+.dobtn:hover{filter:brightness(1.08)}
+.dobtn[disabled]{opacity:.55;cursor:default;filter:none}
+.dobtn.ghost{background:none;color:var(--ink-2);border:1px solid var(--rule);font-weight:400}
+.dobtn.ghost:hover{border-color:var(--accent);color:var(--accent);filter:none}
+.draftbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding:9px 18px;border-top:1px solid var(--rule);background:var(--amber-wash);font-size:12px;color:var(--ink-2)}
+.draftbar b{color:var(--ink);font-weight:600}
+.draftbody{padding:4px 18px 18px;border-top:1px solid var(--rule);max-width:74ch}
+.draftbody h5{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);margin:18px 0 7px;font-weight:400}
+.draftbody h5:first-child{margin-top:14px}
+.draftbody p{margin:0 0 9px;font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+.draftbody ul{margin:0 0 9px;padding-left:18px}
+.draftbody li{font-size:13.5px;line-height:1.6;color:var(--ink-2);margin-bottom:5px}
+.draftbody .cursor{display:inline-block;width:7px;height:14px;background:var(--accent);vertical-align:-2px;animation:bl 1s steps(2) infinite}
+@keyframes bl{50%{opacity:0}}
+.draftfoot{display:flex;gap:9px;padding:0 18px 16px;flex-wrap:wrap;align-items:center}
 .caveat{background:var(--amber-wash);border:1px solid color-mix(in srgb,var(--amber) 30%,transparent);border-radius:3px;padding:11px 13px;font-size:12.5px;color:var(--ink-2);line-height:1.55;margin:16px 0}
 .caveat b{color:var(--ink);font-weight:600}
 .saved{font-size:11px;color:var(--green);font-family:var(--mono)}
@@ -309,6 +329,8 @@ const TAG_LABEL = { P: ["p", "Permit"], N: ["n", "Notice"], I: ["i", "Offence"],
 /* ---------- state ---------- */
 const overlay = { clauses: {}, proposals: {}, gates: {}, pilots: {}, risks: {}, engagement: {} };
 let dbDoc = null, dbExists = false;
+let sampleFn = null;
+const draft = { text: "", busy: false, at: null, err: "" };
 const filters = { q: "", part: "", disp: "", owner: "", tag: "", pstatus: "", punit: "" };
 let initials = "";
 try { initials = localStorage.getItem("llr-initials") || ""; } catch (e) {}
@@ -365,6 +387,156 @@ function setDbStatus(kind, text) {
     () => setDbStatus("local", "Shared copy unavailable — working locally"),
   );
 })();
+
+(async function connectSample() {
+  const s = window.claude && (await window.claude.use("sample"));
+  if (!s) return;
+  sampleFn = s;
+  render();
+})();
+
+/* ---------- the fortnightly update ---------- */
+// Everything the drafter is allowed to know: the register as it stands right
+// now, plus what the team changed in the last fortnight.
+function stateBrief() {
+  const L = [];
+  const today = new Date().toISOString().slice(0, 10);
+  L.push("TODAY: " + today);
+  L.push(`LAW: ${LAW.title}, ${LAW.council}. Commenced ${LAW.commenced}. Sunsets ${LAW.sunset} — ${daysToSunset} days away, and cannot be extended.`);
+  L.push(`Planned commencement of the new law ${gateDate(commence)}, leaving ${floatWeeks} weeks of float before the sunset.`);
+
+  const t = clauseTally();
+  L.push("", `CLAUSE REGISTER — ${D.clauses.length} operative clauses`);
+  for (const d of DISPOSITIONS) if (t[d]) L.push(`- ${d}: ${t[d]}`);
+  const out = {};
+  for (const c of D.clauses) if (dispOf(c) === "Not started") out[ownerOf(c)] = (out[ownerOf(c)] || 0) + 1;
+  const byUnit = Object.entries(out).sort((a, b) => b[1] - a[1]);
+  if (byUnit.length) L.push("- Still without a disposition, by unit: " + byUnit.map(([u, k]) => `${u} ${k}`).join("; "));
+
+  L.push("", "GATES");
+  for (const g of GATES) {
+    const d = days(TODAY, gateDate(g));
+    const note = ov("gates", g.id, "note", "");
+    L.push(`- ${g.id} ${gateDate(g)} (${d < 0 ? Math.abs(d) + " days overdue" : "in " + d + " days"}) — ${g.title}. ${g.forum}, owner ${ov("gates", g.id, "owner", g.owner)}. Status: ${gateStatus(g)}.${note ? " Note: " + note : ""}`);
+  }
+
+  const ps = {};
+  for (const p of D.proposals) ps[pstatusOf(p)] = (ps[pstatusOf(p)] || 0) + 1;
+  L.push("", "PROPOSALS — " + D.proposals.length + " in the backlog");
+  L.push("- " + Object.entries(ps).map(([k, v]) => `${k}: ${v}`).join("; "));
+  const parked = D.proposals.filter((p) => pstatusOf(p) === "Parked" || pstatusOf(p) === "Triage");
+  for (const p of parked) L.push(`- Undecided: ${p.id} ${p.title} (raised ${p.raised}, ${p.unit}, sensitivity ${p.sensitivity})`);
+
+  L.push("", "PILOTS");
+  for (const p of D.pilots) L.push(`- ${p.id} ${p.title} — ${ov("pilots", p.id, "status", p.status)}, ${p.start} to ${p.end}, ${p.owner}`);
+  L.push(`- All pilots must report by G4 on ${gateDate(GATES.find((g) => g.id === "G4"))}.`);
+
+  L.push("", "RISKS scoring 9 or above");
+  for (const r of D.risks) {
+    const sc = ov("risks", r.id, "likelihood", r.likelihood) * ov("risks", r.id, "consequence", r.consequence);
+    if (sc >= 9) L.push(`- ${r.id} (${sc}) ${r.title} — owner ${ov("risks", r.id, "owner", r.owner)}, ${ov("risks", r.id, "status", r.status)}`);
+  }
+
+  const cut = new Date(TODAY.getTime() - 14 * 86400000).toISOString().slice(0, 10);
+  const moves = [];
+  const NAME = { clauses: "clause", proposals: "proposal", gates: "gate", pilots: "pilot", risks: "risk", engagement: "engagement activity" };
+  for (const kind of Object.keys(overlay))
+    for (const [id, o] of Object.entries(overlay[kind] || {}))
+      if (o && o.at && o.at >= cut) {
+        const what = Object.keys(o).filter((k) => k !== "at" && k !== "by").map((k) => `${k} set to "${o[k]}"`).join(", ");
+        moves.push(`- ${o.at}: ${NAME[kind]} ${id} — ${what}${o.by ? " (" + o.by + ")" : ""}`);
+      }
+  L.push("", "CHANGED IN THE LAST 14 DAYS");
+  L.push(moves.length ? moves.sort().reverse().join("\n") : "- Nothing was changed in the register in the last fortnight.");
+
+  return L.join("\n");
+}
+
+const DRAFT_PROMPT = `You are drafting the fortnightly Executive update for the project manager of the City of Stonnington Local Law review.
+
+Write in plain Australian local-government English. Be specific: name dates, owners, and clause or reference numbers. No filler and no adjectives like "significant", "robust" or "exciting". Do not congratulate anyone. Where something needs a decision, say who has to make it and by when. Where the register shows nothing happened, say that plainly rather than padding it.
+
+Use exactly these four headings, each on its own line in capitals:
+WHERE WE ARE
+WHAT MOVED THIS FORTNIGHT
+WHAT NEEDS A DECISION
+WATCH LIST
+
+Plain text only. Start bullets with "- ". No markdown, no bold markers, no tables. Under 300 words in total.
+
+Everything you know about the project is below. Do not invent activity that is not in it.
+
+`;
+
+async function draftUpdate() {
+  if (!sampleFn || draft.busy) return;
+  draft.busy = true; draft.err = ""; draft.text = "";
+  render();
+  try {
+    const res = await sampleFn(DRAFT_PROMPT + stateBrief(), {
+      modelTier: "complex",
+      onText: ({ text }) => {
+        draft.text = text;
+        const el = document.getElementById("draftbody");
+        if (el) el.innerHTML = renderDraft(text, true);
+      },
+    });
+    draft.text = res.text;
+    draft.at = new Date();
+  } catch (e) {
+    draft.err = e && e.code === "rate_limited"
+      ? "Too many requests just now. Try again in a minute."
+      : e && e.code === "not_granted"
+        ? "Drafting needs your permission — reload and allow it when asked."
+        : "The draft did not come back. Nothing in the register has changed.";
+    if (e && e.text) draft.text = e.text;
+  }
+  draft.busy = false;
+  render();
+}
+
+function renderDraft(text, streaming) {
+  const parts = [];
+  let inList = false;
+  for (const raw of String(text).split("\n")) {
+    const line = raw.trim();
+    if (!line) continue;
+    const isHead = /^[A-Z][A-Z ,&'’-]{3,44}$/.test(line);
+    if (isHead) {
+      if (inList) { parts.push("</ul>"); inList = false; }
+      parts.push(`<h5>${esc(line)}</h5>`);
+    } else if (/^[-•]\s+/.test(line)) {
+      if (!inList) { parts.push("<ul>"); inList = true; }
+      parts.push(`<li>${esc(line.replace(/^[-•]\s+/, ""))}</li>`);
+    } else {
+      if (inList) { parts.push("</ul>"); inList = false; }
+      parts.push(`<p>${esc(line)}</p>`);
+    }
+  }
+  if (inList) parts.push("</ul>");
+  if (streaming) parts.push('<span class="cursor"></span>');
+  return parts.join("");
+}
+
+function draftPanel() {
+  if (!sampleFn) return "";
+  const has = draft.text || draft.busy || draft.err;
+  return `
+  <h3 class="sec">Fortnightly update <span class="tally">drafted from the register as it stands</span></h3>
+  <div class="draftbox">
+    <div class="drafthead">
+      <div><h4>Executive update</h4>
+        <p class="lede">Reads the clause register, the gates, the backlog, the pilots, the risk scores and every change made in the last fortnight — then drafts the note you would otherwise write by hand.</p></div>
+      <button class="dobtn" id="draftbtn" type="button"${draft.busy ? " disabled" : ""}>${draft.busy ? "Drafting…" : has ? "Draft again" : "Draft the update"}</button>
+    </div>
+    ${has ? `<div class="draftbar"><b>Draft only.</b> Nothing here is saved to the register, and no decision in this tool is recorded by it. Read it before it goes anywhere.</div>
+    <div class="draftbody" id="draftbody">${renderDraft(draft.text, draft.busy)}</div>
+    ${draft.err ? `<div class="draftfoot"><span style="color:var(--accent);font-size:12.5px">${esc(draft.err)}</span></div>` : ""}
+    ${draft.text && !draft.busy ? `<div class="draftfoot">
+      <button class="dobtn ghost" id="draftcopy" type="button">Copy to clipboard</button>
+      <span style="font-size:11.5px;color:var(--ink-3)">Drafted ${esc(draft.at ? draft.at.toLocaleTimeString("en-AU", { hour: "numeric", minute: "2-digit" }) : "")} from the register as it stands. Yours to edit and sign off.</span></div>` : ""}` : ""}
+  </div>`;
+}
 
 /* ---------- derived program facts ---------- */
 const LAW = D.program.law;
@@ -444,6 +616,8 @@ function viewProgram() {
     <div class="panel"><h4>Falling due in the next six months</h4><p class="lede">Gates in date order, with the forum that has to sign them off.</p><div class="stack">${soon}</div></div>
     <div class="panel"><h4>Risks carrying the most exposure</h4><p class="lede">Likelihood &times; consequence, scored out of 25.</p><div class="stack">${topRisks}</div></div>
   </div>
+
+  ${draftPanel()}
 
   <h3 class="sec">Where the clause register stands <span class="tally">${totalC} operative clauses</span></h3>
   <div class="tallybar">${bars}</div>
@@ -867,8 +1041,16 @@ const autosize = (t) => { t.style.height = "auto"; t.style.height = Math.min(t.s
 addEventListener("hashchange", () => { closeDrawer(); scrollTo(0, 0); render(); });
 
 document.addEventListener("click", (e) => {
-  const b = e.target.closest("[data-proposal],[data-gate],[data-risk],[data-close],#f-clear,#f-pclear,#themebtn");
+  const b = e.target.closest("[data-proposal],[data-gate],[data-risk],[data-close],#f-clear,#f-pclear,#themebtn,#draftbtn,#draftcopy");
   if (!b) return;
+  if (b.id === "draftbtn") return draftUpdate();
+  if (b.id === "draftcopy") {
+    navigator.clipboard.writeText(draft.text).then(
+      () => { b.textContent = "Copied"; setTimeout(() => { b.textContent = "Copy to clipboard"; }, 1600); },
+      () => { b.textContent = "Select the text and copy it"; },
+    );
+    return;
+  }
   if (b.hasAttribute("data-close")) return closeDrawer();
   if (b.id === "themebtn") {
     const cur = document.documentElement.getAttribute("data-theme");

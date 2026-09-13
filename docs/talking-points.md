@@ -27,7 +27,21 @@ Video file: `docs/media/local-law-review-demo.mp4` (62s, silent, captioned)
 - Uncertainty is labelled on the face of the tool ("Confirm with Governance"), not buried.
 - The same page runs the standup, the Executive update and the Councillor briefing.
 
-## The AI angle
+## Built with AI, and AI inside it
+- "We built this with AI" is a story about tooling speed. Impressive once, and it cannot
+  answer "so what changes on Monday?"
+- "AI does work inside this every fortnight" is a story about the job. Lead with that one.
+- The tool drafts the Executive update: one button reads the register, gates, backlog,
+  pilots, risk scores and every change in the last fortnight, and writes the note the PM
+  would otherwise write by hand. Show this live — it is not in the video.
+- AI drafts an input; an officer owns the record. The draft is never saved into the
+  register, and every disposition still carries the name of whoever set it.
+- Deliberately not a chatbot. The test applied: does it attack something that happens
+  every fortnight, and does it hand a human something to sign off?
+- Roadmap, not now: theming free-text submissions at exhibition in late 2027 and mapping
+  each theme back to a clause. That is the substantial win, and it needs real submissions.
+
+## The rest of the AI angle
 - Built in a day from the PDF of the existing law; the clause register was read out of the instrument, not typed.
 - The shift is not that AI wrote code — it is that a purpose-built tool now beats bending the work to a generic template.
 - Cheap to change means it is allowed to be wrong; the process can move without a two-year lock-in.
@@ -39,6 +53,8 @@ Video file: `docs/media/local-law-review-demo.mp4` (62s, silent, captioned)
 - Statutory steps need Governance and Legal confirmation before the first Council report.
 - Talk to Information Management before real content goes in.
 - Not a submissions system; scope that separately at G6.
+- The drafting feature asks each viewer for consent and runs on their own Claude access —
+  check what that means for colleagues before promising it to a room.
 
 ## The cost question
 A day, and no procurement. The honest follow-up: the value is in whether the PM runs the
