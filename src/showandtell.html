@@ -1,0 +1,156 @@
+<title>Show and Tell Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#ECEEF0; --surface:#FFFFFF; --surface-2:#F4F6F7;
+  --ink:#14181C; --ink-2:#4A545C; --ink-3:#79848D;
+  --rule:#D2D9DE; --rule-strong:#B6C0C7;
+  --accent:#8A2F32; --accent-wash:#F3E6E6;
+  --teal:#1F5F66; --teal-wash:#E2EDEE;
+  --amber:#9C6510; --amber-wash:#F5EADA;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0F1317; --surface:#171C21; --surface-2:#1D242A;
+  --ink:#E4E9ED; --ink-2:#A4AFB7; --ink-3:#78838C;
+  --rule:#2A323A; --rule-strong:#3B444D;
+  --accent:#D97F84; --accent-wash:#341F21;
+  --teal:#63AEB4; --teal-wash:#17302F;
+  --amber:#D9A445; --amber-wash:#332816;
+}}
+:root[data-theme="dark"]{
+  --paper:#0F1317; --surface:#171C21; --surface-2:#1D242A;
+  --ink:#E4E9ED; --ink-2:#A4AFB7; --ink-3:#78838C;
+  --rule:#2A323A; --rule-strong:#3B444D;
+  --accent:#D97F84; --accent-wash:#341F21;
+  --teal:#63AEB4; --teal-wash:#17302F;
+  --amber:#D9A445; --amber-wash:#332816;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6}
+.wrap{max-width:860px;margin:0 auto;padding-block:34px;padding-left:20px;padding-right:20px}
+h1,h2,h3{font-family:var(--serif);font-weight:500;margin:0;text-wrap:balance;letter-spacing:-.008em}
+.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--accent)}
+header{border-bottom:1px solid var(--rule);padding-bottom:22px;margin-bottom:24px}
+header h1{font-size:33px;margin-top:9px;line-height:1.1}
+header p{color:var(--ink-2);max-width:62ch;margin:11px 0 0;font-size:15px}
+figure{margin:0 0 10px}
+video{width:100%;display:block;border:1px solid var(--rule-strong);border-radius:3px;background:#000}
+figcaption{font-size:12.5px;color:var(--ink-3);margin-top:9px;line-height:1.5}
+h2{font-size:20px;margin:38px 0 4px}
+h2+.lede{color:var(--ink-3);font-size:13.5px;margin:0 0 14px;max-width:60ch}
+ul{margin:0;padding-left:0;list-style:none}
+li{position:relative;padding:0 0 13px 21px;max-width:68ch}
+li::before{content:"";position:absolute;left:3px;top:11px;width:5px;height:5px;background:var(--accent);border-radius:50%}
+li b{font-weight:600}
+li .q{color:var(--ink-2)}
+.script{background:var(--surface);border:1px solid var(--rule);border-radius:3px;padding:4px 20px 14px;margin-top:14px}
+.line{display:grid;grid-template-columns:60px 1fr;gap:16px;padding:11px 0;border-top:1px solid var(--rule);align-items:baseline}
+.line:first-child{border-top:0}
+.line .t{font-family:var(--mono);font-size:11.5px;color:var(--accent);font-variant-numeric:tabular-nums}
+.line .s{font-size:14.5px;line-height:1.55}
+.flag{background:var(--amber-wash);border:1px solid color-mix(in srgb,var(--amber) 32%,transparent);border-radius:3px;padding:13px 16px;margin:22px 0 0;font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.flag b{color:var(--ink)}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px;padding-top:20px;border-top:1px solid var(--rule)}
+.links a{display:inline-flex;flex-direction:column;gap:2px;text-decoration:none;border:1px solid var(--rule);border-radius:3px;padding:11px 15px;background:var(--surface);min-width:200px}
+.links a:hover{border-color:var(--accent)}
+.links .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.links .v{font-size:14px;font-weight:500;color:var(--accent)}
+footer{margin-top:30px;padding-top:18px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-3);line-height:1.6}
+@media (max-width:620px){
+  header h1{font-size:26px}
+  .line{grid-template-columns:1fr;gap:2px}
+}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Show and tell · Local Law review</div>
+  <h1>A tool that keeps one immovable date in front of everyone</h1>
+  <p>Sixty seconds of the working tool, and the notes to talk over it. The City of Stonnington General Local Law 2018 (No.&nbsp;1) expires on 19 July 2028 and cannot be extended — everything below works backwards from that.</p>
+</header>
+
+<figure>
+  <video controls playsinline preload="metadata" poster="poster.jpg">
+    <source src="demo.mp4" type="video/mp4">
+    <source src="demo.webm" type="video/webm">
+    Your browser cannot play this video. The file is also attached separately.
+  </video>
+  <figcaption>62 seconds, no sound — the on-screen captions carry it, or read the script below over the top. Recorded against a local copy of the same build, so the live-sync indicator is hidden.</figcaption>
+</figure>
+
+<h2>What it is</h2>
+<p class="lede">One private web page, six views, shared with whoever we choose.</p>
+<ul>
+  <li><b>A register of all 121 operative clauses</b> of the current law, read straight out of the law itself — including the numbering gap where Part 4 was repealed in 2023. Each clause takes a decision, an owning business unit and a note.</li>
+  <li><b>A backward-planned program</b> — nine phases and twelve gates, with the two dates that cannot move drawn across the chart: the sunset, and the October 2028 election caretaker period.</li>
+  <li><b>The change backlog in one place</b>, including the items that have been sitting with managers since 2019, each scored for impact and effort and each needing a disposition.</li>
+  <li><b>The engagement plan</b>, with the IAP2 level attached to every activity so the promise we make to participants is explicit.</li>
+  <li><b>A pilot register</b> — seven pilots, each running under powers Council already has, each with a stated measure, all reporting before drafting instructions lock.</li>
+  <li><b>Risks and decisions</b>, scored and owned, so settled questions stop being reopened at the last briefing.</li>
+</ul>
+
+<h2>How it makes our lives easier</h2>
+<ul>
+  <li><b>It turns "review the local law" into something countable.</b> 121 clauses, 26 still without a decision. That is a number we can report weekly instead of a status adjective.</li>
+  <li><b>It kills the version problem.</b> No clause-review spreadsheet emailed around with eleven copies in circulation. One page, current for everyone who opens it.</li>
+  <li><b>It answers the corridor question in ten seconds.</b> "Are we on track, and what's blocking us?" — days to the sunset, the next gate, what's outstanding and who owns it.</li>
+  <li><b>It forces the held-over items out early.</b> The backlog surfaces at the start with a date and a name against each item, rather than in the week before drafting closes.</li>
+  <li><b>It keeps the pilots honest.</b> Each one has a hypothesis and a measure written down before it starts, so the evaluation is an assessment rather than an argument.</li>
+  <li><b>It protects the margin.</b> The gap between planned commencement and the sunset is four weeks, displayed permanently. Nobody can spend that quietly.</li>
+</ul>
+
+<h2>Transparency and collaboration</h2>
+<ul>
+  <li><b>Everyone sees the same picture.</b> Parks, Compliance, Governance, Economic Development — one register, not eleven parallel views of it.</li>
+  <li><b>Every change is attributed.</b> A disposition or a note is stamped with who changed it and when, so a decision has an author rather than appearing by consensus.</li>
+  <li><b>Nothing can be parked silently.</b> Items held since 2019 are visible with their raised date. Leaving one parked through this review means carrying it another ten years, and that choice is now on the record.</li>
+  <li><b>The uncertainty is labelled, not buried.</b> Gates with a provisional statutory reference are flagged "Confirm with Governance" on the face of the tool, so nobody mistakes an assumption for a pin-cite.</li>
+  <li><b>It is the briefing.</b> The same page runs the weekly standup, the Executive update and the Councillor briefing — no re-keying into three different formats.</li>
+</ul>
+
+<h2>The part worth saying out loud in an AI-curious room</h2>
+<ul>
+  <li><b>This was built in a day, from the PDF of the existing law.</b> The clause register was not typed out by hand — it was read out of the instrument, structure and all.</li>
+  <li><b>The interesting shift is not that AI wrote code.</b> It is that a purpose-built tool is now cheaper than bending the work to fit a generic project template or going to market for a product.</li>
+  <li><b>It is cheap to change, which means it can be wrong.</b> If the process moves, the tool moves in an afternoon. We are not locked into the wrong fields for two years because the build was expensive.</li>
+  <li><b>The content stays ours in plain files</b> — clause list, backlog, dates, risks — held in our own repository, so nothing depends on this particular tool surviving.</li>
+  <li><b>The pattern generalises.</b> Any long statutory process with a fixed deadline has the same shape: planning scheme amendments, the Council Plan, policy review cycles.</li>
+</ul>
+
+<h2>Where I would be careful</h2>
+<ul>
+  <li><b>The starting content is drafted, not decided.</b> Clause structure and the sunset date come from the law. The backlog, dates, pilots and risks are a realistic first cut to argue with, not a record of anything Council has agreed.</li>
+  <li><b>The statutory steps need Governance and Legal.</b> The program assumes a conventional notice, exhibition and hearing cycle. If the notice period differs, the dates need re-cutting — that check should happen before the first Council report.</li>
+  <li><b>Check it with Information Management before real content goes in.</b> The page is private and shared only with people we name, but that is a conversation to have up front, not after.</li>
+  <li><b>It is not a submissions system.</b> When exhibition opens in late 2027 the volume, particularly on cat containment, needs something purpose-built or a properly resourced manual process. Scope that at G6.</li>
+</ul>
+
+<h2>Sixty-second script</h2>
+<p class="lede">If you would rather talk over it than rely on the captions.</p>
+<div class="script">
+  <div class="line"><span class="t">0:00</span><span class="s">The local law our officers enforce every day expires on 19 July 2028. Ten years from commencement, and there is no power to extend it.</span></div>
+  <div class="line"><span class="t">0:06</span><span class="s">So the whole program is planned backwards from that wall — nine phases, twelve gates.</span></div>
+  <div class="line"><span class="t">0:11</span><span class="s">Open any gate and it tells you what has to be true before it closes, and which forum signs it off.</span></div>
+  <div class="line"><span class="t">0:18</span><span class="s">Here is every clause of the current law. A hundred and twenty-one of them. Twenty-six still carry no decision — that is the outstanding work, and it is countable.</span></div>
+  <div class="line"><span class="t">0:24</span><span class="s">An officer makes the call right here, in the register, instead of in an email thread nobody can find in six months.</span></div>
+  <div class="line"><span class="t">0:29</span><span class="s">It saves for the whole team, stamped with who and when — and watch the counts move. Twenty-six outstanding becomes twenty-five.</span></div>
+  <div class="line"><span class="t">0:35</span><span class="s">This is the backlog. Everything anyone has asked for, including the items that have been sitting with a manager since 2019.</span></div>
+  <div class="line"><span class="t">0:41</span><span class="s">E-scooters, for instance. Raised in 2022. Three clauses engaged. A pilot already lined up to produce the evidence before we draft anything.</span></div>
+  <div class="line"><span class="t">0:49</span><span class="s">And two risks that could genuinely cost us the date. Both visible, both owned by a name.</span></div>
+  <div class="line"><span class="t">0:55</span><span class="s">One link. Every unit, every Councillor briefing, working from the same picture.</span></div>
+</div>
+
+<div class="flag"><b>If you are asked "what did this cost?"</b> — a day, and no procurement. The honest follow-up is that the value is not in the build, it is in whether the project manager actually runs the review in it. A tool nobody opens is worse than a spreadsheet everybody does.</div>
+
+<div class="links">
+  <a href="https://claude.ai/code/artifact/0fc98b73-7b76-4899-a638-97cedc2ca320"><span class="k">Open the tool</span><span class="v">Sunset Clause →</span></a>
+  <a href="https://github.com/sjhross/LocalLaw/tree/claude/busy-planck-7vm62l"><span class="k">The source and data</span><span class="v">LocalLaw repository →</span></a>
+</div>
+
+<footer>The tool is private until shared from its own share menu. Clause numbers, titles, Part structure, the sunset date and the permit, notice and offence markers are read from General Local Law 2018 (No.&nbsp;1) as amended in 2023. Program dates, backlog, pilots, engagement plan and risks are a drafted starting position.</footer>
+</div>
